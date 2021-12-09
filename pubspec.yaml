@@ -53,7 +53,7 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
   assets:
-    - Assets/test1.png
+    - Assets/
   fonts:
     - family: Varela
       fonts:
