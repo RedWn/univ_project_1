@@ -1,2 +1,2 @@
 # Univ-Project-1
-A flutter fornt end done for a University Project
+A flutter front end done for a University Project
