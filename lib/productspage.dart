@@ -1,5 +1,7 @@
 import 'package:test4/main.dart';
 import 'package:flutter/material.dart';
+import 'package:test4/productmanager.dart';
+// import 'package:image_picker/image_picker.dart';
 
 class Product extends StatelessWidget {
   Product({required this.img, required this.text});
@@ -24,17 +26,13 @@ class Product extends StatelessWidget {
             ]),
         child: TextButton(
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(
-                Assets.backgroundColor),
-            foregroundColor:
-            MaterialStateProperty.all(Assets.textColor),
-            shape: MaterialStateProperty.all<
-                RoundedRectangleBorder>(
+            backgroundColor: MaterialStateProperty.all(Assets.backgroundColor),
+            foregroundColor: MaterialStateProperty.all(Assets.textColor),
+            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                 RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18))),
-            overlayColor:
-            MaterialStateProperty.resolveWith<Color?>(
-                  (Set<MaterialState> states) {
+            overlayColor: MaterialStateProperty.resolveWith<Color?>(
+              (Set<MaterialState> states) {
                 if (states.contains(MaterialState.hovered)) {
                   return Colors.red.withOpacity(0.04);
                 }
@@ -48,7 +46,10 @@ class Product extends StatelessWidget {
           ),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            img,
+            Hero(
+              tag: 'img',
+              child: img,
+            ),
             Text(
               text,
               style: TextStyle(
@@ -73,18 +74,13 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  List<Product> getProducts(int page) {
+  List<Product> getProducts(String mode) {
+    //To be reworked to accommodate for back-end response
     List<Product> Products = [];
-    int max = 0, min =0;
-    if (page == 0) {
-      max = 5;
-    } else if (page == 1) {
-      max = 2;
-    } else {
-      max = 8;
-      min = 2;
-    }
-    for (int i = min; i < max; i++) {
+    if (mode == 'All Products') {
+    } else if (mode == 'My Products') {
+    } else if (mode == 'Favorites') {}
+    for (int i = 0; i < 5; i++) {
       Product temp = Product(
           img: Image.asset('Assets/test$i.png'), text: 'Very Cool Car #$i');
       Products.add(temp);
@@ -97,14 +93,17 @@ class _MainPageState extends State<MainPage> {
   List<Product> Products = [];
   @override
   Widget build(BuildContext context) {
-    Products = getProducts(_selectedIndex);
+    Products = getProducts(title);
     return MaterialApp(
       home: Scaffold(
         floatingActionButton: FloatingActionButton(
           backgroundColor: Assets.primaryColor.withOpacity(0.9),
           foregroundColor: Assets.backgroundColor,
           child: const Icon(Icons.add_circle_rounded),
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (_) => const AddProduct()));
+          },
         ),
         appBar: AppBar(
           foregroundColor: Assets.backgroundColor,
@@ -130,9 +129,10 @@ class _MainPageState extends State<MainPage> {
           currentIndex: _selectedIndex,
           items: const [
             BottomNavigationBarItem(
-                icon: Icon(Icons.featured_play_list), label: "All Products"),
+                icon: Icon(Icons.menu_rounded), label: "All Products"),
             BottomNavigationBarItem(
-                icon: Icon(Icons.featured_play_list), label: "My Products"),
+                icon: Icon(Icons.insert_emoticon_rounded),
+                label: "My Products"),
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
               label: "Favorites",
@@ -153,12 +153,13 @@ class _MainPageState extends State<MainPage> {
   void _onTapping(int index) {
     setState(() {
       _selectedIndex = index;
-      if (index == 1)
+      if (index == 1) {
         title = 'My Products';
-      else if (index == 2)
+      } else if (index == 2) {
         title = 'Favorites';
-      else
+      } else {
         title = 'All Products';
+      }
     });
   }
 }

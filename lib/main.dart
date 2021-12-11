@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:test4/productspage.dart';
+import 'package:test4/productmanager.dart';
 
 void main() => runApp(const MyApp());
 
@@ -9,6 +11,7 @@ class Assets {
   static Color textColor = const Color(0xFF303030);
   static Color accentColor = const Color(0xFF765A2F);
   static Color backgroundColor = const Color(0xFFF1F3F6);
+  static Color tappedShadowColor = Assets.primaryColor.withOpacity(0.5);
   static Color shadowColor = Colors.grey.shade400;
   static double roundCorners = 12;
   static String mainFont = 'Varela';
@@ -48,7 +51,7 @@ class RedApp extends StatelessWidget {
                       ),
                     ),
                     margin: EdgeInsets.fromLTRB(
-                        0, MediaQuery.of(context).size.height / 10, 0, 0),
+                        20, MediaQuery.of(context).size.height / 10, 20, 0),
                   ),
                   Container(
                       margin: EdgeInsets.fromLTRB(50,
@@ -62,7 +65,7 @@ class RedApp extends StatelessWidget {
                             foregroundColor:
                                 MaterialStateProperty.all(Assets.textColor),
                             shape: MaterialStateProperty.all<
-                                    RoundedRectangleBorder>(
+                                    RoundedRectangleBorder>( //RedWn was here
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(18))),
                             overlayColor:
@@ -147,8 +150,7 @@ class RedApp extends StatelessWidget {
                         style: TextStyle(
                             fontFamily: Assets.mainFont,
                             color: Assets.backgroundColor,
-                            fontSize: 20
-                        ),
+                            fontSize: 20),
                       )),
                 ],
               ),
@@ -188,12 +190,12 @@ class _LoginState extends State<Login> {
                             color: Assets.textColor,
                           ),
                         ),
-                        margin: EdgeInsets.fromLTRB(50,
-                            MediaQuery.of(context).size.height / 10, 50, 10),
+                        margin: EdgeInsets.fromLTRB(
+                            50, MediaQuery.of(context).size.height / 10, 50, 0),
                       ),
                       Container(
-                        margin: EdgeInsets.fromLTRB(50,
-                            MediaQuery.of(context).size.height * 2 / 10, 50, 0),
+                        margin: EdgeInsets.fromLTRB(
+                            50, MediaQuery.of(context).size.height / 10, 50, 0),
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(
@@ -210,8 +212,7 @@ class _LoginState extends State<Login> {
                           textInputAction: TextInputAction.next,
                           onTap: () {
                             setState(() {
-                              usernameShadowColor =
-                                  Assets.primaryColor.withOpacity(0.5);
+                              usernameShadowColor = Assets.tappedShadowColor;
                               passwordShadowColor = Assets.shadowColor;
                             });
                           },
@@ -237,10 +238,12 @@ class _LoginState extends State<Login> {
                                 )),
                             filled: true,
                             fillColor: Assets.backgroundColor.withOpacity(0.9),
-                            hintText: 'Username',
-                            hintStyle: TextStyle(
-                              fontFamily: Assets.mainFont,
-                              color: Assets.textColor,
+                            label: Text(
+                              'Username',
+                              style: TextStyle(
+                                fontFamily: Assets.mainFont,
+                                color: Assets.textColor,
+                              ),
                             ),
                           ),
                         ),
@@ -268,8 +271,7 @@ class _LoginState extends State<Login> {
                           onTap: () {
                             setState(() {
                               usernameShadowColor = Assets.shadowColor;
-                              passwordShadowColor =
-                                  Assets.primaryColor.withOpacity(0.5);
+                              passwordShadowColor = Assets.tappedShadowColor;
                             });
                           },
                           textAlign: TextAlign.center,
@@ -294,10 +296,12 @@ class _LoginState extends State<Login> {
                                 )),
                             filled: true,
                             fillColor: Assets.backgroundColor.withOpacity(0.9),
-                            hintText: 'Password',
-                            hintStyle: TextStyle(
-                              fontFamily: Assets.mainFont,
-                              color: Assets.textColor,
+                            label: Text(
+                              'Password',
+                              style: TextStyle(
+                                fontFamily: Assets.mainFont,
+                                color: Assets.textColor,
+                              ),
                             ),
                           ),
                         ),
@@ -337,7 +341,8 @@ class _LoginState extends State<Login> {
                                             .contains(MaterialState.focused) ||
                                         states
                                             .contains(MaterialState.pressed)) {
-                                      return const Color(0xFFFFDADB).withOpacity(0.5);
+                                      return const Color(0xFFFFDADB)
+                                          .withOpacity(0.5);
                                     }
                                     return null; // Defer to the widget's default.
                                   },
@@ -411,8 +416,8 @@ class _SignUpState extends State<SignUp> {
                             MediaQuery.of(context).size.height / 10, 50, 10),
                       ),
                       Container(
-                        margin: EdgeInsets.fromLTRB(50,
-                            MediaQuery.of(context).size.height * 2 / 10, 50, 0),
+                        margin: EdgeInsets.fromLTRB(
+                            50, MediaQuery.of(context).size.height / 10, 50, 0),
                         width: MediaQuery.of(context).size.width,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.all(
@@ -429,8 +434,7 @@ class _SignUpState extends State<SignUp> {
                           textInputAction: TextInputAction.next,
                           onTap: () {
                             setState(() {
-                              usernameShadowColor =
-                                  Assets.primaryColor.withOpacity(0.5);
+                              usernameShadowColor = Assets.tappedShadowColor;
                               emailShadowColor = Assets.shadowColor;
                               passwordShadowColor = Assets.shadowColor;
                             });
@@ -457,10 +461,12 @@ class _SignUpState extends State<SignUp> {
                                 )),
                             filled: true,
                             fillColor: Assets.backgroundColor.withOpacity(0.9),
-                            hintText: 'Username',
-                            hintStyle: TextStyle(
-                              fontFamily: Assets.mainFont,
-                              color: Assets.textColor,
+                            label: Text(
+                              'Username',
+                              style: TextStyle(
+                                fontFamily: Assets.mainFont,
+                                color: Assets.textColor,
+                              ),
                             ),
                           ),
                         ),
@@ -483,12 +489,12 @@ class _SignUpState extends State<SignUp> {
                               )
                             ]),
                         child: TextField(
+                          keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                           onTap: () {
                             setState(() {
                               usernameShadowColor = Assets.shadowColor;
-                              emailShadowColor =
-                                  Assets.primaryColor.withOpacity(0.5);
+                              emailShadowColor = Assets.tappedShadowColor;
                               passwordShadowColor = Assets.shadowColor;
                             });
                           },
@@ -514,10 +520,12 @@ class _SignUpState extends State<SignUp> {
                                 )),
                             filled: true,
                             fillColor: Assets.backgroundColor.withOpacity(0.9),
-                            hintText: 'Email',
-                            hintStyle: TextStyle(
-                              fontFamily: Assets.mainFont,
-                              color: Assets.textColor,
+                            label: Text(
+                              'Email',
+                              style: TextStyle(
+                                fontFamily: Assets.mainFont,
+                                color: Assets.textColor,
+                              ),
                             ),
                           ),
                         ),
@@ -546,8 +554,7 @@ class _SignUpState extends State<SignUp> {
                             setState(() {
                               usernameShadowColor = Assets.shadowColor;
                               emailShadowColor = Assets.shadowColor;
-                              passwordShadowColor =
-                                  Assets.primaryColor.withOpacity(0.5);
+                              passwordShadowColor = Assets.tappedShadowColor;
                             });
                           },
                           textAlign: TextAlign.center,
@@ -572,10 +579,12 @@ class _SignUpState extends State<SignUp> {
                                 )),
                             filled: true,
                             fillColor: Assets.backgroundColor.withOpacity(0.9),
-                            hintText: 'Password',
-                            hintStyle: TextStyle(
-                              fontFamily: Assets.mainFont,
-                              color: Assets.textColor,
+                            label: Text(
+                              'Password',
+                              style: TextStyle(
+                                fontFamily: Assets.mainFont,
+                                color: Assets.textColor,
+                              ),
                             ),
                           ),
                         ),
@@ -615,7 +624,8 @@ class _SignUpState extends State<SignUp> {
                                             .contains(MaterialState.focused) ||
                                         states
                                             .contains(MaterialState.pressed)) {
-                                      return const Color(0xFFFFDADB).withOpacity(0.3);
+                                      return const Color(0xFFFFDADB)
+                                          .withOpacity(0.3);
                                     }
                                     return null; // Defer to the widget's default.
                                   },
