@@ -26,15 +26,16 @@ class _AddProductState extends State<AddProduct> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Container(
-                  padding: EdgeInsets.fromLTRB(50, 10, 50, 25),
+                  padding: const EdgeInsets.fromLTRB(50, 20, 50, 25),
                   child: Text(
                     'Add a product',
                     style: TextStyle(
                       fontFamily: Assets.mainFont,
                       fontSize: 50,
+                      color: Assets.textColor,
                     ),
                   ),
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                  margin: const EdgeInsets.fromLTRB(0, 0, 0, 10),
                 ),
                 Column(
                   children: [
@@ -98,63 +99,125 @@ class _AddProductState extends State<AddProduct> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(Assets.roundCorners)),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: const Offset(2, 2),
-                              blurRadius: 6,
-                              spreadRadius: 1,
-                              color: priceShadowColor,
-                            )
-                          ]),
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        onTap: () {
-                          setState(() {
-                            nameShadowColor = Assets.shadowColor;
-                            priceShadowColor = Assets.tappedShadowColor;
-                            numShadowColor = Assets.shadowColor;
-                            quantityShadowColor = Assets.shadowColor;
-                            dateShadowColor = Assets.shadowColor;
-                          });
-                        },
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Assets.textColor,
-                          fontSize: 25,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          border: UnderlineInputBorder(
+                    Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(50, 0, 15, 0),
+                          width: MediaQuery.of(context).size.width/3,
+                          decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
-                            Radius.circular(Assets.roundCorners),
-                          )),
-                          focusedBorder: UnderlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(Assets.roundCorners),
-                              ),
-                              borderSide: BorderSide(
-                                color: Assets.primaryColor,
-                                width: 0.01,
-                              )),
-                          filled: true,
-                          fillColor: Assets.backgroundColor.withOpacity(0.9),
-                          label: Text(
-                            'Price',
+                                  Radius.circular(Assets.roundCorners)),
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: const Offset(2, 2),
+                                  blurRadius: 6,
+                                  spreadRadius: 1,
+                                  color: priceShadowColor,
+                                )
+                              ]),
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
+                            onTap: () {
+                              setState(() {
+                                nameShadowColor = Assets.shadowColor;
+                                priceShadowColor = Assets.tappedShadowColor;
+                                numShadowColor = Assets.shadowColor;
+                                quantityShadowColor = Assets.shadowColor;
+                                dateShadowColor = Assets.shadowColor;
+                              });
+                            },
+                            textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontFamily: Assets.mainFont,
                               color: Assets.textColor,
+                              fontSize: 25,
+                            ),
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                              border: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                Radius.circular(Assets.roundCorners),
+                              )),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(Assets.roundCorners),
+                                  ),
+                                  borderSide: BorderSide(
+                                    color: Assets.primaryColor,
+                                    width: 0.01,
+                                  )),
+                              filled: true,
+                              fillColor: Assets.backgroundColor.withOpacity(0.9),
+                              label: Text(
+                                'Price',
+                                style: TextStyle(
+                                  fontFamily: Assets.mainFont,
+                                  color: Assets.textColor,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(15, 0, 50, 0),
+                          width: MediaQuery.of(context).size.width/3,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(
+                                  Radius.circular(Assets.roundCorners)),
+                              boxShadow: [
+                                BoxShadow(
+                                  offset: const Offset(2, 2),
+                                  blurRadius: 6,
+                                  spreadRadius: 1,
+                                  color: quantityShadowColor,
+                                )
+                              ]),
+                          child: TextField(
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.next,
+                            onTap: () {
+                              setState(() {
+                                nameShadowColor = Assets.shadowColor;
+                                priceShadowColor = Assets.shadowColor;
+                                numShadowColor = Assets.shadowColor;
+                                quantityShadowColor = Assets.tappedShadowColor;
+                                dateShadowColor = Assets.shadowColor;
+                              });
+                            },
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Assets.textColor,
+                              fontSize: 25,
+                            ),
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 15),
+                              border: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(Assets.roundCorners),
+                                  )),
+                              focusedBorder: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(Assets.roundCorners),
+                                  ),
+                                  borderSide: BorderSide(
+                                    color: Assets.primaryColor,
+                                    width: 0.01,
+                                  )),
+                              filled: true,
+                              fillColor: Assets.backgroundColor.withOpacity(0.9),
+                              label: Text(
+                                'Quantity',
+                                style: TextStyle(
+                                  fontFamily: Assets.mainFont,
+                                  color: Assets.textColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(
                       height: 20,
@@ -231,67 +294,6 @@ class _AddProductState extends State<AddProduct> {
                               offset: const Offset(2, 2),
                               blurRadius: 6,
                               spreadRadius: 1,
-                              color: quantityShadowColor,
-                            )
-                          ]),
-                      child: TextField(
-                        keyboardType: TextInputType.number,
-                        textInputAction: TextInputAction.next,
-                        onTap: () {
-                          setState(() {
-                            nameShadowColor = Assets.shadowColor;
-                            priceShadowColor = Assets.shadowColor;
-                            numShadowColor = Assets.shadowColor;
-                            quantityShadowColor = Assets.tappedShadowColor;
-                            dateShadowColor = Assets.shadowColor;
-                          });
-                        },
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Assets.textColor,
-                          fontSize: 25,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 15),
-                          border: UnderlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                            Radius.circular(Assets.roundCorners),
-                          )),
-                          focusedBorder: UnderlineInputBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(Assets.roundCorners),
-                              ),
-                              borderSide: BorderSide(
-                                color: Assets.primaryColor,
-                                width: 0.01,
-                              )),
-                          filled: true,
-                          fillColor: Assets.backgroundColor.withOpacity(0.9),
-                          label: Text(
-                            'Quantity',
-                            style: TextStyle(
-                              fontFamily: Assets.mainFont,
-                              color: Assets.textColor,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(Assets.roundCorners)),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: const Offset(2, 2),
-                              blurRadius: 6,
-                              spreadRadius: 1,
                               color: dateShadowColor,
                             )
                           ]),
@@ -342,7 +344,7 @@ class _AddProductState extends State<AddProduct> {
                       height: 20,
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 50),
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor:
@@ -388,3 +390,33 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 }
+
+class ShowProduct extends StatefulWidget {
+  const ShowProduct({Key? key}) : super(key: key);
+
+  @override
+  _ShowProductState createState() => _ShowProductState();
+}
+
+class _ShowProductState extends State<ShowProduct> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class EditProduct extends StatefulWidget {
+  const EditProduct({Key? key}) : super(key: key);
+
+  @override
+  _EditProductState createState() => _EditProductState();
+}
+
+class _EditProductState extends State<EditProduct> {
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+

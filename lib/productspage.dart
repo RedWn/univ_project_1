@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:test4/main.dart';
 import 'package:flutter/material.dart';
 import 'package:test4/productmanager.dart';
@@ -60,7 +61,6 @@ class Product extends StatelessWidget {
             ),
           ]),
           onPressed: () {
-            print(text);
           },
         ));
   }
@@ -97,8 +97,8 @@ class _MainPageState extends State<MainPage> {
     return MaterialApp(
       home: Scaffold(
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Assets.primaryColor.withOpacity(0.9),
-          foregroundColor: Assets.backgroundColor,
+          backgroundColor: Assets.primaryColor,
+          foregroundColor: Assets.lightTextColor,
           child: const Icon(Icons.add_circle_rounded),
           onPressed: () {
             Navigator.push(
@@ -106,14 +106,26 @@ class _MainPageState extends State<MainPage> {
           },
         ),
         appBar: AppBar(
-          foregroundColor: Assets.backgroundColor,
+          foregroundColor: Assets.primaryColor,
           title: Text(title),
-          backgroundColor: Assets.primaryColor.withOpacity(0.9),
+          backgroundColor: Assets.backgroundColor,
+        ),
+        drawer: SafeArea(
+          child: Drawer(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(child: Text('Username', style: TextStyle(fontFamily: Assets.mainFont, fontSize: 30, color: Assets.textColor),), padding: EdgeInsets.symmetric(vertical: 20,horizontal: 50),),
+                TextButton(onPressed: () {
+                }, child: Text('Log Out', style: TextStyle(fontFamily: Assets.mainFont, fontSize: 20, color: Assets.primaryColor),), )
+              ],
+            ),
+          ),
         ),
         backgroundColor: Assets.backgroundColor,
         bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.shifting,
-          backgroundColor: Assets.backgroundColor.withOpacity(0.9),
+          backgroundColor: Assets.primaryColor,
           iconSize: 30,
           selectedIconTheme:
               IconThemeData(color: Assets.primaryColor, size: 40),
@@ -127,13 +139,14 @@ class _MainPageState extends State<MainPage> {
           unselectedLabelStyle:
               TextStyle(color: Assets.textColor, fontFamily: Assets.mainFont),
           currentIndex: _selectedIndex,
-          items: const [
+          items:[
             BottomNavigationBarItem(
-                icon: Icon(Icons.menu_rounded), label: "All Products"),
-            BottomNavigationBarItem(
+              backgroundColor: Assets.backgroundColor,
+                icon: const Icon(Icons.menu_rounded), label: "All Products"),
+            const BottomNavigationBarItem(
                 icon: Icon(Icons.insert_emoticon_rounded),
                 label: "My Products"),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
               label: "Favorites",
             )
