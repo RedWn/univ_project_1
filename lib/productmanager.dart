@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:test4/main.dart';
+import 'package:univ_project_1/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:test4/productspage.dart';
+import 'package:univ_project_1/productspage.dart';
 
 class AddProduct extends StatefulWidget {
   final String token;
@@ -52,36 +52,39 @@ class _AddProductState extends State<AddProduct> {
                 Column(
                   children: [
                     Container(
-                      width: MediaQuery.of(context).size.width/2,
+                      width: MediaQuery.of(context).size.width / 2,
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                          MaterialStateProperty.all(Assets.primaryColor),
-                          foregroundColor: MaterialStateProperty.all(
-                              Assets.backgroundColor),
-                          shape: MaterialStateProperty.all<
-                              RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      Assets.roundCorners))),
+                              MaterialStateProperty.all(Assets.primaryColor),
+                          foregroundColor:
+                              MaterialStateProperty.all(Assets.backgroundColor),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          Assets.roundCorners))),
                           overlayColor:
-                          MaterialStateProperty.resolveWith<Color?>(
-                                (Set<MaterialState> states) {
+                              MaterialStateProperty.resolveWith<Color?>(
+                            (Set<MaterialState> states) {
                               if (states.contains(MaterialState.hovered)) {
                                 return Colors.deepPurple.withOpacity(0.04);
                               }
                               if (states.contains(MaterialState.focused) ||
                                   states.contains(MaterialState.pressed)) {
-                                return const Color(0xFFFFDADB)
-                                    .withOpacity(0.3);
+                                return const Color(0xFFFFDADB).withOpacity(0.3);
                               }
                               return null; // Defer to the widget's default.
                             },
                           ),
                         ),
-                        child: Text('Upload Image', style: TextStyle(fontFamily: Assets.mainFont),),
+                        child: Text(
+                          'Upload Image',
+                          style: TextStyle(fontFamily: Assets.mainFont),
+                        ),
                         onPressed: () async {
-                          image = await picker.pickImage(source: ImageSource.gallery);
+                          image = await picker.pickImage(
+                              source: ImageSource.gallery);
                         },
                       ),
                     ),
@@ -145,7 +148,7 @@ class _AddProductState extends State<AddProduct> {
                           ),
                         ),
                       ),
-                    ),//name
+                    ), //name
                     const SizedBox(
                       height: 20,
                     ),
@@ -154,7 +157,7 @@ class _AddProductState extends State<AddProduct> {
                       children: [
                         Container(
                           margin: const EdgeInsets.fromLTRB(50, 0, 15, 0),
-                          width: MediaQuery.of(context).size.width/3,
+                          width: MediaQuery.of(context).size.width / 3,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                   Radius.circular(Assets.roundCorners)),
@@ -200,7 +203,8 @@ class _AddProductState extends State<AddProduct> {
                                     width: 0.01,
                                   )),
                               filled: true,
-                              fillColor: Assets.backgroundColor.withOpacity(0.9),
+                              fillColor:
+                                  Assets.backgroundColor.withOpacity(0.9),
                               label: Text(
                                 'Price',
                                 style: TextStyle(
@@ -210,10 +214,10 @@ class _AddProductState extends State<AddProduct> {
                               ),
                             ),
                           ),
-                        ),//price
+                        ), //price
                         Container(
                           margin: const EdgeInsets.fromLTRB(15, 0, 50, 0),
-                          width: MediaQuery.of(context).size.width/3,
+                          width: MediaQuery.of(context).size.width / 3,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                   Radius.circular(Assets.roundCorners)),
@@ -248,8 +252,8 @@ class _AddProductState extends State<AddProduct> {
                                   horizontal: 20, vertical: 15),
                               border: UnderlineInputBorder(
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(Assets.roundCorners),
-                                  )),
+                                Radius.circular(Assets.roundCorners),
+                              )),
                               focusedBorder: UnderlineInputBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(Assets.roundCorners),
@@ -259,7 +263,8 @@ class _AddProductState extends State<AddProduct> {
                                     width: 0.01,
                                   )),
                               filled: true,
-                              fillColor: Assets.backgroundColor.withOpacity(0.9),
+                              fillColor:
+                                  Assets.backgroundColor.withOpacity(0.9),
                               label: Text(
                                 'Quantity',
                                 style: TextStyle(
@@ -269,7 +274,7 @@ class _AddProductState extends State<AddProduct> {
                               ),
                             ),
                           ),
-                        ),//quantity
+                        ), //quantity
                       ],
                     ),
                     const SizedBox(
@@ -333,7 +338,7 @@ class _AddProductState extends State<AddProduct> {
                           ),
                         ),
                       ),
-                    ),//num
+                    ), //num
                     const SizedBox(
                       height: 20,
                     ),
@@ -405,8 +410,8 @@ class _AddProductState extends State<AddProduct> {
                         width: MediaQuery.of(context).size.width,
                         child: ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Assets.primaryColor),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Assets.primaryColor),
                               foregroundColor: MaterialStateProperty.all(
                                   Assets.backgroundColor),
                               shape: MaterialStateProperty.all<
@@ -465,22 +470,21 @@ class _AddProductState extends State<AddProduct> {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           "Accept": "application/json",
-        'Authorization': 'Bearer $tok',
+          'Authorization': 'Bearer $tok',
         },
         encoding: Encoding.getByName('utf-8'),
         body: map);
     Map<String, dynamic> resp = jsonDecode(response.body);
     print(response.body);
     if (response.statusCode == 201) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (_) => MainPage(token: widget.token)));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (_) => MainPage(token: widget.token)));
     } else if (response.statusCode == 401) {
       print("shit shit");
     }
   }
-  void auto(){
+
+  void auto() {
     Navigator.push(
         context, MaterialPageRoute(builder: (_) => MainPage(token: "name")));
   }
@@ -496,31 +500,32 @@ class ShowProduct extends StatefulWidget {
 class _ShowProductState extends State<ShowProduct> {
   @override
   Widget build(BuildContext context) {
-    return  Directionality(textDirection: TextDirection.rtl, child: Scaffold(
-
-      appBar: AppBar(
-        title: Text('details'),
-        centerTitle: true,
-      ),
-      body: Container(
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+    return Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('details'),
+            centerTitle: true,
+          ),
+          body: Container(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: <
+                    Widget>[
               Image(
                 width: 200,
                 height: 200,
                 image: AssetImage('images/scopinal.jpg'),
               ),
               SizedBox(
-                height: 30,),
+                height: 30,
+              ),
               Container(
-                padding:EdgeInsets .all(5.0),
+                padding: EdgeInsets.all(5.0),
                 color: Colors.blue,
-                margin: EdgeInsets.symmetric(vertical: 5.0,horizontal: 80.0),
+                margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 80.0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children:<Widget> [
-
+                    children: <Widget>[
                       /*Icon(
                       Icons.person_add,
                       color:Colors.indigo,
@@ -528,131 +533,119 @@ class _ShowProductState extends State<ShowProduct> {
                       SizedBox(
                         width: 10,
                       ),
-                      Text(  'name',
+                      Text(
+                        'name',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black54,
                           fontFamily: 'BalooBhaijaan2-VariableFont_wght',
-                          fontSize:20,
-
+                          fontSize: 20,
                         ),
                       ),
                       SizedBox(
-                        height: 30,),
-
-                    ]),
-              ),
-
-              Container(
-                padding:EdgeInsets .all(5.0),
-                color: Colors.blue,
-                margin: EdgeInsets.symmetric(vertical: 5.0,horizontal: 80.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children:<Widget> [
-
-
-                      SizedBox(
-                        width: 10,
+                        height: 30,
                       ),
-                      Text(  'price' ,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54,
-                          fontFamily: 'BalooBhaijaan2-VariableFont_wght',
-                          fontSize:20,
-
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,),
-
-                    ]),
-              ),
-
-              Container(
-                padding:EdgeInsets .all(5.0),
-                color: Colors.blue,
-                margin: EdgeInsets.symmetric(vertical: 5.0,horizontal: 80.0),
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children:<Widget> [
-
-                      SizedBox(
-                        width: 10,
-                      ),
-
-                      Text('11/12/2022',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black54,
-                          fontFamily: 'BalooBhaijaan2-VariableFont_wght',
-                          fontSize:20,
-
-                        ),
-                      ),
-                      SizedBox(
-                        height: 30,),
-
                     ]),
               ),
               Container(
-                padding:EdgeInsets .all(5.0),
+                padding: EdgeInsets.all(5.0),
                 color: Colors.blue,
-                margin: EdgeInsets.symmetric(vertical: 5.0,horizontal: 80.0),
+                margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 80.0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children:<Widget> [
-
+                    children: <Widget>[
                       SizedBox(
                         width: 10,
                       ),
-
-                      Text('ahmad',
+                      Text(
+                        'price',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black54,
                           fontFamily: 'BalooBhaijaan2-VariableFont_wght',
-                          fontSize:20,
-
+                          fontSize: 20,
                         ),
                       ),
                       SizedBox(
-                        height: 30,),
-
+                        height: 30,
+                      ),
                     ]),
               ),
               Container(
-                padding:EdgeInsets .all(5.0),
+                padding: EdgeInsets.all(5.0),
                 color: Colors.blue,
-                margin: EdgeInsets.symmetric(vertical: 5.0,horizontal: 80.0),
+                margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 80.0),
                 child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children:<Widget> [
-
+                    children: <Widget>[
                       SizedBox(
                         width: 10,
                       ),
-
-                      Text('09548755',
+                      Text(
+                        '11/12/2022',
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           color: Colors.black54,
                           fontFamily: 'BalooBhaijaan2-VariableFont_wght',
-                          fontSize:20,
-
+                          fontSize: 20,
                         ),
                       ),
                       SizedBox(
-                        height: 30,),
-
+                        height: 30,
+                      ),
                     ]),
               ),
-
-            ] ),
-      ),
-    )
-    );
+              Container(
+                padding: EdgeInsets.all(5.0),
+                color: Colors.blue,
+                margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 80.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        'ahmad',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,
+                          fontFamily: 'BalooBhaijaan2-VariableFont_wght',
+                          fontSize: 20,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                    ]),
+              ),
+              Container(
+                padding: EdgeInsets.all(5.0),
+                color: Colors.blue,
+                margin: EdgeInsets.symmetric(vertical: 5.0, horizontal: 80.0),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        '09548755',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black54,
+                          fontFamily: 'BalooBhaijaan2-VariableFont_wght',
+                          fontSize: 20,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                    ]),
+              ),
+            ]),
+          ),
+        ));
   }
 }
 
@@ -700,32 +693,35 @@ class _EditProductState extends State<EditProduct> {
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                          MaterialStateProperty.all(Assets.primaryColor),
-                          foregroundColor: MaterialStateProperty.all(
-                              Assets.backgroundColor),
-                          shape: MaterialStateProperty.all<
-                              RoundedRectangleBorder>(
-                              RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      Assets.roundCorners))),
+                              MaterialStateProperty.all(Assets.primaryColor),
+                          foregroundColor:
+                              MaterialStateProperty.all(Assets.backgroundColor),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          Assets.roundCorners))),
                           overlayColor:
-                          MaterialStateProperty.resolveWith<Color?>(
-                                (Set<MaterialState> states) {
+                              MaterialStateProperty.resolveWith<Color?>(
+                            (Set<MaterialState> states) {
                               if (states.contains(MaterialState.hovered)) {
                                 return Colors.red.withOpacity(0.04);
                               }
                               if (states.contains(MaterialState.focused) ||
                                   states.contains(MaterialState.pressed)) {
-                                return const Color(0xFFFFDADB)
-                                    .withOpacity(0.3);
+                                return const Color(0xFFFFDADB).withOpacity(0.3);
                               }
                               return null; // Defer to the widget's default.
                             },
                           ),
                         ),
-                        child: Text('Upload Image', style: TextStyle(fontFamily: Assets.mainFont),),
+                        child: Text(
+                          'Upload Image',
+                          style: TextStyle(fontFamily: Assets.mainFont),
+                        ),
                         onPressed: () async {
-                          image = await picker.pickImage(source: ImageSource.gallery);
+                          image = await picker.pickImage(
+                              source: ImageSource.gallery);
                         },
                       ),
                     ),
@@ -766,8 +762,8 @@ class _EditProductState extends State<EditProduct> {
                               horizontal: 20, vertical: 15),
                           border: UnderlineInputBorder(
                               borderRadius: BorderRadius.all(
-                                Radius.circular(Assets.roundCorners),
-                              )),
+                            Radius.circular(Assets.roundCorners),
+                          )),
                           focusedBorder: UnderlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(Assets.roundCorners),
@@ -796,7 +792,7 @@ class _EditProductState extends State<EditProduct> {
                       children: [
                         Container(
                           margin: const EdgeInsets.fromLTRB(50, 0, 15, 0),
-                          width: MediaQuery.of(context).size.width/3,
+                          width: MediaQuery.of(context).size.width / 3,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                   Radius.circular(Assets.roundCorners)),
@@ -829,8 +825,8 @@ class _EditProductState extends State<EditProduct> {
                                   horizontal: 20, vertical: 15),
                               border: UnderlineInputBorder(
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(Assets.roundCorners),
-                                  )),
+                                Radius.circular(Assets.roundCorners),
+                              )),
                               focusedBorder: UnderlineInputBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(Assets.roundCorners),
@@ -840,7 +836,8 @@ class _EditProductState extends State<EditProduct> {
                                     width: 0.01,
                                   )),
                               filled: true,
-                              fillColor: Assets.backgroundColor.withOpacity(0.9),
+                              fillColor:
+                                  Assets.backgroundColor.withOpacity(0.9),
                               label: Text(
                                 'Price',
                                 style: TextStyle(
@@ -853,7 +850,7 @@ class _EditProductState extends State<EditProduct> {
                         ),
                         Container(
                           margin: const EdgeInsets.fromLTRB(15, 0, 50, 0),
-                          width: MediaQuery.of(context).size.width/3,
+                          width: MediaQuery.of(context).size.width / 3,
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.all(
                                   Radius.circular(Assets.roundCorners)),
@@ -886,8 +883,8 @@ class _EditProductState extends State<EditProduct> {
                                   horizontal: 20, vertical: 15),
                               border: UnderlineInputBorder(
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(Assets.roundCorners),
-                                  )),
+                                Radius.circular(Assets.roundCorners),
+                              )),
                               focusedBorder: UnderlineInputBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(Assets.roundCorners),
@@ -897,7 +894,8 @@ class _EditProductState extends State<EditProduct> {
                                     width: 0.01,
                                   )),
                               filled: true,
-                              fillColor: Assets.backgroundColor.withOpacity(0.9),
+                              fillColor:
+                                  Assets.backgroundColor.withOpacity(0.9),
                               label: Text(
                                 'Quantity',
                                 style: TextStyle(
@@ -948,8 +946,8 @@ class _EditProductState extends State<EditProduct> {
                               horizontal: 20, vertical: 15),
                           border: UnderlineInputBorder(
                               borderRadius: BorderRadius.all(
-                                Radius.circular(Assets.roundCorners),
-                              )),
+                            Radius.circular(Assets.roundCorners),
+                          )),
                           focusedBorder: UnderlineInputBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(Assets.roundCorners),
@@ -979,18 +977,18 @@ class _EditProductState extends State<EditProduct> {
                         width: MediaQuery.of(context).size.width,
                         child: ElevatedButton(
                             style: ButtonStyle(
-                              backgroundColor:
-                              MaterialStateProperty.all(Assets.primaryColor),
+                              backgroundColor: MaterialStateProperty.all(
+                                  Assets.primaryColor),
                               foregroundColor: MaterialStateProperty.all(
                                   Assets.backgroundColor),
                               shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
+                                      RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(
                                           Assets.roundCorners))),
                               overlayColor:
-                              MaterialStateProperty.resolveWith<Color?>(
-                                    (Set<MaterialState> states) {
+                                  MaterialStateProperty.resolveWith<Color?>(
+                                (Set<MaterialState> states) {
                                   if (states.contains(MaterialState.hovered)) {
                                     return Colors.red.withOpacity(0.04);
                                   }
@@ -1012,8 +1010,7 @@ class _EditProductState extends State<EditProduct> {
                                 fontSize: 25,
                                 fontFamily: Assets.mainFont,
                               ),
-                            )
-                        ),
+                            )),
                       ),
                     ),
                     const SizedBox(
@@ -1025,17 +1022,17 @@ class _EditProductState extends State<EditProduct> {
                         child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor:
-                              MaterialStateProperty.all(Colors.red),
+                                  MaterialStateProperty.all(Colors.red),
                               foregroundColor: MaterialStateProperty.all(
                                   Assets.backgroundColor),
                               shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
+                                      RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(
                                           Assets.roundCorners))),
                               overlayColor:
-                              MaterialStateProperty.resolveWith<Color?>(
-                                    (Set<MaterialState> states) {
+                                  MaterialStateProperty.resolveWith<Color?>(
+                                (Set<MaterialState> states) {
                                   if (states.contains(MaterialState.hovered)) {
                                     return Colors.red.withOpacity(0.04);
                                   }
@@ -1057,8 +1054,7 @@ class _EditProductState extends State<EditProduct> {
                                 fontSize: 25,
                                 fontFamily: Assets.mainFont,
                               ),
-                            )
-                        ),
+                            )),
                       ),
                     )
                   ],
@@ -1071,13 +1067,10 @@ class _EditProductState extends State<EditProduct> {
     );
   }
 
-  void auto(){
+  void auto() {
     Navigator.push(
         context, MaterialPageRoute(builder: (_) => MainPage(token: "name")));
   }
-  getProductInfo() async {
 
-  }
+  getProductInfo() async {}
 }
-
-

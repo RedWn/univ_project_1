@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:test4/main.dart';
+import 'package:univ_project_1/main.dart';
 import 'package:flutter/material.dart';
-import 'package:test4/productmanager.dart';
+import 'package:univ_project_1/productmanager.dart';
 import 'package:http/http.dart' as http;
 
 class Product extends StatelessWidget {
@@ -60,10 +60,10 @@ class Product extends StatelessWidget {
             ),
           ]),
           onPressed: () {
-            if (state == "My Products"){
+            if (state == "My Products") {
               Navigator.push(
                   context, MaterialPageRoute(builder: (_) => EditProduct()));
-            }else{
+            } else {
               Navigator.push(
                   context, MaterialPageRoute(builder: (_) => ShowProduct()));
             }
@@ -81,22 +81,24 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-
   Future<void> getAll() async {
     final response = await http.post(Uri.parse(Assets.link + "showAllProducts"),
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
           "Accept": "application/json",
         },
-        encoding: Encoding.getByName('utf-8')
-    );
-    List<dynamic> resp = jsonDecode(response.body); //TODO: search single clients
-    for (int i = 0;i<resp.length;i++){
+        encoding: Encoding.getByName('utf-8'));
+    List<dynamic> resp =
+        jsonDecode(response.body); //TODO: search single clients
+    for (int i = 0; i < resp.length; i++) {
       Product temp = Product(
-          img: Image.asset(resp[i]["image"]), text: resp[i]["name"],state: title);
+          img: Image.asset(resp[i]["image"]),
+          text: resp[i]["name"],
+          state: title);
       Products.add(temp);
     }
   }
+
   // Map<String, Image> getMy(){}
   // Map<String, Image> getFav(){}
   Future<List<Product>> getProducts(String mode) async {
@@ -107,15 +109,18 @@ class _MainPageState extends State<MainPage> {
       // map = getMy();
     } else if (mode == 'Favorites') {
       // map = getFav();
-      for (int i =0;i<5;i++) {
+      for (int i = 0; i < 5; i++) {
         Product temp = Product(
-            img: Image.asset('Assets/test$i.png'), text: 'Very Cool Car #$i',state: title);
+            img: Image.asset('Assets/test$i.png'),
+            text: 'Very Cool Car #$i',
+            state: title);
         Products.add(temp);
       }
     }
 
     return Products;
   }
+
   int _selectedIndex = 0;
   String title = 'All Products';
   List<Product> Products = [];
@@ -123,89 +128,106 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Assets.primaryColor,
-          foregroundColor: Assets.lightTextColor,
-          child: const Icon(Icons.add_circle_rounded),
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (_) => AddProduct(token: widget.token)));
-          },
-        ),
-        appBar: AppBar(
-          foregroundColor: Assets.primaryColor,
-          title: Text(title),
-          backgroundColor: Assets.backgroundColor,
-        ),
-        drawer: SafeArea(
-          child: Drawer(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(child: Text(widget.token, style: TextStyle(fontFamily: Assets.mainFont, fontSize: 30, color: Assets.textColor),), padding: EdgeInsets.symmetric(vertical: 20,horizontal: 50),),
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => const RedApp()));
-                },
-                  child: Text('Log Out', style: TextStyle(fontFamily: Assets.mainFont, fontSize: 20, color: Assets.primaryColor),), )
-              ],
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Assets.primaryColor,
+            foregroundColor: Assets.lightTextColor,
+            child: const Icon(Icons.add_circle_rounded),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => AddProduct(token: widget.token)));
+            },
+          ),
+          appBar: AppBar(
+            foregroundColor: Assets.primaryColor,
+            title: Text(title),
+            backgroundColor: Assets.backgroundColor,
+          ),
+          drawer: SafeArea(
+            child: Drawer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    child: Text(
+                      widget.token,
+                      style: TextStyle(
+                          fontFamily: Assets.mainFont,
+                          fontSize: 30,
+                          color: Assets.textColor),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => const RedApp()));
+                    },
+                    child: Text(
+                      'Log Out',
+                      style: TextStyle(
+                          fontFamily: Assets.mainFont,
+                          fontSize: 20,
+                          color: Assets.primaryColor),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-        backgroundColor: Assets.backgroundColor,
-        bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.shifting,
-          backgroundColor: Assets.primaryColor,
-          iconSize: 30,
-          selectedIconTheme:
-              IconThemeData(color: Assets.primaryColor, size: 40),
-          selectedItemColor: Assets.primaryColor,
-          selectedLabelStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Assets.primaryColor,
-              fontFamily: Assets.mainFont),
-          unselectedIconTheme: IconThemeData(color: Assets.textColor),
-          unselectedItemColor: Assets.textColor,
-          unselectedLabelStyle:
-              TextStyle(color: Assets.textColor, fontFamily: Assets.mainFont),
-          currentIndex: _selectedIndex,
-          items:[
-            BottomNavigationBarItem(
-              backgroundColor: Assets.backgroundColor,
-                icon: const Icon(Icons.menu_rounded), label: "All Products"),
-            const BottomNavigationBarItem(
-                icon: Icon(Icons.insert_emoticon_rounded),
-                label: "My Products"),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.favorite),
-              label: "Favorites",
-            )
-          ],
-          onTap: _onTapping,
-        ),
-        body: futureListViewBuilder()
-      ),
+          backgroundColor: Assets.backgroundColor,
+          bottomNavigationBar: BottomNavigationBar(
+            type: BottomNavigationBarType.shifting,
+            backgroundColor: Assets.primaryColor,
+            iconSize: 30,
+            selectedIconTheme:
+                IconThemeData(color: Assets.primaryColor, size: 40),
+            selectedItemColor: Assets.primaryColor,
+            selectedLabelStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Assets.primaryColor,
+                fontFamily: Assets.mainFont),
+            unselectedIconTheme: IconThemeData(color: Assets.textColor),
+            unselectedItemColor: Assets.textColor,
+            unselectedLabelStyle:
+                TextStyle(color: Assets.textColor, fontFamily: Assets.mainFont),
+            currentIndex: _selectedIndex,
+            items: [
+              BottomNavigationBarItem(
+                  backgroundColor: Assets.backgroundColor,
+                  icon: const Icon(Icons.menu_rounded),
+                  label: "All Products"),
+              const BottomNavigationBarItem(
+                  icon: Icon(Icons.insert_emoticon_rounded),
+                  label: "My Products"),
+              const BottomNavigationBarItem(
+                icon: Icon(Icons.favorite),
+                label: "Favorites",
+              )
+            ],
+            onTap: _onTapping,
+          ),
+          body: futureListViewBuilder()),
     );
   }
-  Widget futureListViewBuilder(){
+
+  Widget futureListViewBuilder() {
     return FutureBuilder(
-      future: getProducts(title),
-        builder: (context, projectSnap){
-        if (projectSnap.connectionState == ConnectionState.none && projectSnap.hasData == false){
-          return Container();
-        }
+        future: getProducts(title),
+        builder: (context, projectSnap) {
+          if (projectSnap.connectionState == ConnectionState.none &&
+              projectSnap.hasData == false) {
+            return Container();
+          }
           return ListView.builder(
               itemCount: Products.length,
               itemBuilder: (BuildContext context, int i) {
                 return Products[i];
-              }
-          );
-        }
-        );
+              });
+        });
   }
+
   void _onTapping(int index) {
     setState(() {
       _selectedIndex = index;

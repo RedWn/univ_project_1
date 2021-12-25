@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:test4/productspage.dart';
+import 'package:univ_project_1/productspage.dart';
 import 'package:http/http.dart' as http;
 
 void main() => runApp(const MyApp());
@@ -20,7 +20,8 @@ class Assets {
   static double roundCorners = 12;
   static String mainFont = 'Varela';
   static String link = "http://127.0.0.1:8000/api/";
-  static String link2 = "https://410c09a9-1200-4123-baa1-53834038eac7.mock.pstmn.io/register";
+  static String link2 =
+      "https://410c09a9-1200-4123-baa1-53834038eac7.mock.pstmn.io/register";
 
   static void enableDarkMode() {
     primaryColor = const Color(0xFFAF2D3C);
@@ -386,7 +387,7 @@ class _LoginState extends State<Login> {
                                   },
                                 ),
                               ),
-                              onLongPress: (){
+                              onLongPress: () {
                                 autoLogin();
                               },
                               onPressed: () {
@@ -445,12 +446,12 @@ class _LoginState extends State<Login> {
           error = resp["errors"]["email"].toString();
         });
       }
-        if (resp["errors"]["password"] != null) {
-          setState(() {
-            passwordShadowColor = Assets.errorShadowColor;
-            error = resp["errors"]["password"].toString();
-          });
-        }
+      if (resp["errors"]["password"] != null) {
+        setState(() {
+          passwordShadowColor = Assets.errorShadowColor;
+          error = resp["errors"]["password"].toString();
+        });
+      }
     }
   }
 
@@ -845,12 +846,12 @@ class _SignUpState extends State<SignUp> {
           error = resp["errors"]["name"].toString();
         });
       }
-        if (resp["errors"]["password"] != null) {
-          setState(() {
-            passwordShadowColor = Assets.errorShadowColor;
-            error = resp["errors"]["password"].toString();
-          });
-        }
+      if (resp["errors"]["password"] != null) {
+        setState(() {
+          passwordShadowColor = Assets.errorShadowColor;
+          error = resp["errors"]["password"].toString();
+        });
+      }
     }
   }
 }
