@@ -1,13 +1,15 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
 import 'package:test4/main.dart';
 import 'package:flutter/material.dart';
 import 'package:test4/productmanager.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:http/http.dart' as http;
 
 class Product extends StatelessWidget {
-  Product({required this.img, required this.text});
+  Product({required this.img, required this.text, required this.state});
   final Image img;
   final String text;
+  final String state;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -47,10 +49,7 @@ class Product extends StatelessWidget {
           ),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            Hero(
-              tag: 'img',
-              child: img,
-            ),
+            img,
             Text(
               text,
               style: TextStyle(
@@ -61,39 +60,67 @@ class Product extends StatelessWidget {
             ),
           ]),
           onPressed: () {
+            if (state == "My Products"){
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => EditProduct()));
+            }else{
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (_) => ShowProduct()));
+            }
           },
         ));
   }
 }
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  final String token;
+  const MainPage({Key? key, required this.token}) : super(key: key);
 
   @override
   _MainPageState createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  List<Product> getProducts(String mode) {
-    //To be reworked to accommodate for back-end response
-    List<Product> Products = [];
-    if (mode == 'All Products') {
-    } else if (mode == 'My Products') {
-    } else if (mode == 'Favorites') {}
-    for (int i = 0; i < 5; i++) {
+
+  Future<void> getAll() async {
+    final response = await http.post(Uri.parse(Assets.link + "showAllProducts"),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Accept": "application/json",
+        },
+        encoding: Encoding.getByName('utf-8')
+    );
+    List<dynamic> resp = jsonDecode(response.body); //TODO: search single clients
+    for (int i = 0;i<resp.length;i++){
       Product temp = Product(
-          img: Image.asset('Assets/test$i.png'), text: 'Very Cool Car #$i');
+          img: Image.asset(resp[i]["image"]), text: resp[i]["name"],state: title);
       Products.add(temp);
     }
+  }
+  // Map<String, Image> getMy(){}
+  // Map<String, Image> getFav(){}
+  Future<List<Product>> getProducts(String mode) async {
+    Products = [];
+    if (mode == 'All Products') {
+      await getAll();
+    } else if (mode == 'My Products') {
+      // map = getMy();
+    } else if (mode == 'Favorites') {
+      // map = getFav();
+      for (int i =0;i<5;i++) {
+        Product temp = Product(
+            img: Image.asset('Assets/test$i.png'), text: 'Very Cool Car #$i',state: title);
+        Products.add(temp);
+      }
+    }
+
     return Products;
   }
-
   int _selectedIndex = 0;
   String title = 'All Products';
   List<Product> Products = [];
   @override
   Widget build(BuildContext context) {
-    Products = getProducts(title);
     return MaterialApp(
       home: Scaffold(
         floatingActionButton: FloatingActionButton(
@@ -102,7 +129,7 @@ class _MainPageState extends State<MainPage> {
           child: const Icon(Icons.add_circle_rounded),
           onPressed: () {
             Navigator.push(
-                context, MaterialPageRoute(builder: (_) => const AddProduct()));
+                context, MaterialPageRoute(builder: (_) => AddProduct(token: widget.token)));
           },
         ),
         appBar: AppBar(
@@ -115,9 +142,15 @@ class _MainPageState extends State<MainPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Container(child: Text('Username', style: TextStyle(fontFamily: Assets.mainFont, fontSize: 30, color: Assets.textColor),), padding: EdgeInsets.symmetric(vertical: 20,horizontal: 50),),
-                TextButton(onPressed: () {
-                }, child: Text('Log Out', style: TextStyle(fontFamily: Assets.mainFont, fontSize: 20, color: Assets.primaryColor),), )
+                Container(child: Text(widget.token, style: TextStyle(fontFamily: Assets.mainFont, fontSize: 30, color: Assets.textColor),), padding: EdgeInsets.symmetric(vertical: 20,horizontal: 50),),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const RedApp()));
+                },
+                  child: Text('Log Out', style: TextStyle(fontFamily: Assets.mainFont, fontSize: 20, color: Assets.primaryColor),), )
               ],
             ),
           ),
@@ -153,16 +186,26 @@ class _MainPageState extends State<MainPage> {
           ],
           onTap: _onTapping,
         ),
-        body: ListView.builder(
-          itemCount: Products.length,
-          itemBuilder: (BuildContext context, int i) {
-            return Products[i];
-          },
-        ),
+        body: futureListViewBuilder()
       ),
     );
   }
-
+  Widget futureListViewBuilder(){
+    return FutureBuilder(
+      future: getProducts(title),
+        builder: (context, projectSnap){
+        if (projectSnap.connectionState == ConnectionState.none && projectSnap.hasData == false){
+          return Container();
+        }
+          return ListView.builder(
+              itemCount: Products.length,
+              itemBuilder: (BuildContext context, int i) {
+                return Products[i];
+              }
+          );
+        }
+        );
+  }
   void _onTapping(int index) {
     setState(() {
       _selectedIndex = index;
