@@ -2,13 +2,20 @@ import 'dart:convert';
 
 import 'package:univ_project_1/main.dart';
 import 'package:flutter/material.dart';
-import 'package:univ_project_1/productmanager.dart';
+import 'package:univ_project_1/addproduct.dart';
+import 'package:univ_project_1/editproduct.dart';
+import 'package:univ_project_1/showproduct.dart';
 import 'package:http/http.dart' as http;
 
 class Product extends StatelessWidget {
-  Product({required this.img, required this.text, required this.state});
+  Product(
+      {required this.img,
+      required this.text,
+      required this.index,
+      required this.state});
   final Image img;
   final String text;
+  final String index;
   final String state;
   @override
   Widget build(BuildContext context) {
@@ -61,11 +68,15 @@ class Product extends StatelessWidget {
           ]),
           onPressed: () {
             if (state == "My Products") {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => EditProduct()));
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => EditProduct()));
             } else {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => ShowProduct()));
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ShowProduct(
+                            index: index,
+                          )));
             }
           },
         ));
@@ -82,18 +93,21 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   Future<void> getAll() async {
-    final response = await http.post(Uri.parse(Assets.link + "showAllProducts"),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Accept": "application/json",
-        },
-        encoding: Encoding.getByName('utf-8'));
+    print("hi");
+    final response = await http.get(
+      Uri.parse(Assets.link + "showAllProducts"),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json",
+      },
+    );
     List<dynamic> resp =
         jsonDecode(response.body); //TODO: search single clients
     for (int i = 0; i < resp.length; i++) {
       Product temp = Product(
           img: Image.asset(resp[i]["image"]),
           text: resp[i]["name"],
+          index: i.toString(),
           state: title);
       Products.add(temp);
     }
@@ -105,6 +119,7 @@ class _MainPageState extends State<MainPage> {
     Products = [];
     if (mode == 'All Products') {
       await getAll();
+      print(Products);
     } else if (mode == 'My Products') {
       // map = getMy();
     } else if (mode == 'Favorites') {
@@ -113,6 +128,7 @@ class _MainPageState extends State<MainPage> {
         Product temp = Product(
             img: Image.asset('Assets/test$i.png'),
             text: 'Very Cool Car #$i',
+            index: "0",
             state: title);
         Products.add(temp);
       }
@@ -157,7 +173,8 @@ class _MainPageState extends State<MainPage> {
                           fontSize: 30,
                           color: Assets.textColor),
                     ),
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 50),
                   ),
                   TextButton(
                     onPressed: () {
