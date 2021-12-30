@@ -246,11 +246,14 @@ class _LoginState extends State<Login> {
         encoding: Encoding.getByName('utf-8'),
         body: map);
     Map<String, dynamic> resp = jsonDecode(response.body);
+    print(resp["user"]["id"]);
     if (response.statusCode == 201) {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (_) => MainPage(token: resp["token"].toString())));
+              builder: (_) => MainPage(
+                  token: resp["token"].toString(),
+                  id: resp["user"]["id"].toString())));
     } else if (response.statusCode == 422) {
       if (resp["errors"]["email"] != null) {
         setState(() {
@@ -269,7 +272,9 @@ class _LoginState extends State<Login> {
   }
 
   void autoLogin() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (_) => const MainPage(token: "name")));
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => const MainPage(token: "name", id: "-1")));
   }
 }

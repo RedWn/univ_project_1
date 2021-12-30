@@ -7,7 +7,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:univ_project_1/productspage.dart';
 
 class EditProduct extends StatefulWidget {
-  const EditProduct({Key? key}) : super(key: key);
+  final String token;
+  final String id;
+  const EditProduct({Key? key, required this.token, required this.id})
+      : super(key: key);
 
   @override
   _EditProductState createState() => _EditProductState();
@@ -18,8 +21,15 @@ class _EditProductState extends State<EditProduct> {
   Color priceShadowColor = Assets.shadowColor;
   Color numShadowColor = Assets.shadowColor;
   Color quantityShadowColor = Assets.shadowColor;
-  XFile? image;
+  Color dateShadowColor = Assets.shadowColor;
   ImagePicker picker = ImagePicker();
+  XFile? image;
+  String name = "";
+  String price = "";
+  String quantity = "";
+  String num = "";
+  List<String> date = [];
+  List<String> value = [];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -33,7 +43,7 @@ class _EditProductState extends State<EditProduct> {
                 Container(
                   padding: const EdgeInsets.fromLTRB(50, 20, 50, 25),
                   child: Text(
-                    'Edit product',
+                    'Edit a product',
                     style: TextStyle(
                       fontFamily: Assets.mainFont,
                       fontSize: 50,
@@ -44,9 +54,8 @@ class _EditProductState extends State<EditProduct> {
                 ),
                 Column(
                   children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width / 2,
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
@@ -62,7 +71,7 @@ class _EditProductState extends State<EditProduct> {
                               MaterialStateProperty.resolveWith<Color?>(
                             (Set<MaterialState> states) {
                               if (states.contains(MaterialState.hovered)) {
-                                return Colors.red.withOpacity(0.04);
+                                return Colors.deepPurple.withOpacity(0.04);
                               }
                               if (states.contains(MaterialState.focused) ||
                                   states.contains(MaterialState.pressed)) {
@@ -107,6 +116,8 @@ class _EditProductState extends State<EditProduct> {
                             priceShadowColor = Assets.shadowColor;
                             numShadowColor = Assets.shadowColor;
                             quantityShadowColor = Assets.shadowColor;
+                            dateShadowColor = Assets.shadowColor;
+                            name = x;
                           });
                         },
                         textAlign: TextAlign.center,
@@ -140,7 +151,7 @@ class _EditProductState extends State<EditProduct> {
                           ),
                         ),
                       ),
-                    ),
+                    ), //name
                     const SizedBox(
                       height: 20,
                     ),
@@ -170,6 +181,8 @@ class _EditProductState extends State<EditProduct> {
                                 priceShadowColor = Assets.tappedShadowColor;
                                 numShadowColor = Assets.shadowColor;
                                 quantityShadowColor = Assets.shadowColor;
+                                dateShadowColor = Assets.shadowColor;
+                                price = x;
                               });
                             },
                             textAlign: TextAlign.center,
@@ -204,7 +217,7 @@ class _EditProductState extends State<EditProduct> {
                               ),
                             ),
                           ),
-                        ),
+                        ), //price
                         Container(
                           margin: const EdgeInsets.fromLTRB(15, 0, 50, 0),
                           width: MediaQuery.of(context).size.width / 3,
@@ -228,6 +241,8 @@ class _EditProductState extends State<EditProduct> {
                                 priceShadowColor = Assets.shadowColor;
                                 numShadowColor = Assets.shadowColor;
                                 quantityShadowColor = Assets.tappedShadowColor;
+                                dateShadowColor = Assets.shadowColor;
+                                quantity = x;
                               });
                             },
                             textAlign: TextAlign.center,
@@ -262,7 +277,7 @@ class _EditProductState extends State<EditProduct> {
                               ),
                             ),
                           ),
-                        ),
+                        ), //quantity
                       ],
                     ),
                     const SizedBox(
@@ -291,6 +306,8 @@ class _EditProductState extends State<EditProduct> {
                             priceShadowColor = Assets.shadowColor;
                             numShadowColor = Assets.tappedShadowColor;
                             quantityShadowColor = Assets.shadowColor;
+                            dateShadowColor = Assets.shadowColor;
+                            num = x;
                           });
                         },
                         textAlign: TextAlign.center,
@@ -324,13 +341,132 @@ class _EditProductState extends State<EditProduct> {
                           ),
                         ),
                       ),
+                    ), //num
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(Assets.roundCorners)),
+                          boxShadow: [
+                            BoxShadow(
+                              offset: const Offset(2, 2),
+                              blurRadius: 6,
+                              spreadRadius: 1,
+                              color: dateShadowColor,
+                            )
+                          ]),
+                      child: TextField(
+                          keyboardType: TextInputType.datetime,
+                          textInputAction: TextInputAction.next,
+                          onChanged: (String x) {
+                            setState(() {
+                              nameShadowColor = Assets.shadowColor;
+                              priceShadowColor = Assets.shadowColor;
+                              numShadowColor = Assets.shadowColor;
+                              quantityShadowColor = Assets.shadowColor;
+                              dateShadowColor = Assets.tappedShadowColor;
+                              date[0] = x;
+                            });
+                          },
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Assets.textColor,
+                            fontSize: 20,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: "YYYY-MM-DD",
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 15),
+                            border: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                              Radius.circular(Assets.roundCorners),
+                            )),
+                            focusedBorder: UnderlineInputBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(Assets.roundCorners),
+                                ),
+                                borderSide: BorderSide(
+                                  color: Assets.primaryColor,
+                                  width: 0.01,
+                                )),
+                            filled: true,
+                            fillColor: Assets.backgroundColor.withOpacity(0.9),
+                            label: Text(
+                              'Expiration Date',
+                              style: TextStyle(
+                                fontFamily: Assets.mainFont,
+                                color: Assets.textColor,
+                              ),
+                            ),
+                          )),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    dateInput(1),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    dateInput(2),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    dateInput(3),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  Assets.errorShadowColor),
+                              foregroundColor: MaterialStateProperty.all(
+                                  Assets.backgroundColor),
+                              shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          Assets.roundCorners))),
+                              overlayColor:
+                                  MaterialStateProperty.resolveWith<Color?>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.hovered)) {
+                                    return Colors.deepPurple.withOpacity(0.04);
+                                  }
+                                  if (states.contains(MaterialState.focused) ||
+                                      states.contains(MaterialState.pressed)) {
+                                    return const Color(0xFFFFDADB)
+                                        .withOpacity(0.3);
+                                  }
+                                  return null; // Defer to the widget's default.
+                                },
+                              ),
+                            ),
+                            onPressed: () {
+                              delete();
+                            },
+                            child: Text(
+                              'DELETE',
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontFamily: Assets.mainFont,
+                              ),
+                            )),
+                      ),
                     ),
                     const SizedBox(
                       height: 20,
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Container(
+                      child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: ElevatedButton(
                             style: ButtonStyle(
@@ -347,7 +483,7 @@ class _EditProductState extends State<EditProduct> {
                                   MaterialStateProperty.resolveWith<Color?>(
                                 (Set<MaterialState> states) {
                                   if (states.contains(MaterialState.hovered)) {
-                                    return Colors.red.withOpacity(0.04);
+                                    return Colors.deepPurple.withOpacity(0.04);
                                   }
                                   if (states.contains(MaterialState.focused) ||
                                       states.contains(MaterialState.pressed)) {
@@ -359,54 +495,10 @@ class _EditProductState extends State<EditProduct> {
                               ),
                             ),
                             onPressed: () {
-                              //auto();
+                              add();
                             },
                             child: Text(
                               'Edit',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontFamily: Assets.mainFont,
-                              ),
-                            )),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 40,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
-                      child: Container(
-                        child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.red),
-                              foregroundColor: MaterialStateProperty.all(
-                                  Assets.backgroundColor),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          Assets.roundCorners))),
-                              overlayColor:
-                                  MaterialStateProperty.resolveWith<Color?>(
-                                (Set<MaterialState> states) {
-                                  if (states.contains(MaterialState.hovered)) {
-                                    return Colors.red.withOpacity(0.04);
-                                  }
-                                  if (states.contains(MaterialState.focused) ||
-                                      states.contains(MaterialState.pressed)) {
-                                    return const Color(0xFFFFDADB)
-                                        .withOpacity(0.3);
-                                  }
-                                  return null; // Defer to the widget's default.
-                                },
-                              ),
-                            ),
-                            onPressed: () {
-                              //auto();
-                            },
-                            child: Text(
-                              'DELETE',
                               style: TextStyle(
                                 fontSize: 25,
                                 fontFamily: Assets.mainFont,
@@ -424,10 +516,197 @@ class _EditProductState extends State<EditProduct> {
     );
   }
 
-  void auto() {
-    Navigator.push(
-        context, MaterialPageRoute(builder: (_) => MainPage(token: "name")));
+  Future<void> delete() async {
+    var idd = widget.id;
+    print(widget.id);
+    var tok = widget.token;
+    final response =
+        await http.delete(Uri.parse(Assets.link + "delete" + "/" + idd),
+            headers: {
+              "Accept": "application/json",
+              'Authorization': 'Bearer $tok',
+            },
+            encoding: Encoding.getByName('utf-8'));
+    print(response.body);
+    if (response.statusCode == 200) {
+      Navigator.pop(context);
+    } else if (response.statusCode == 500) {
+      //TODO: add something
+    }
   }
 
-  getProductInfo() async {}
+  Future<void> add() async {
+    var id = widget.id;
+    print(id);
+    var map = <String, dynamic>{};
+    if (name.isNotEmpty) {
+      map['name'] = name;
+    }
+    if (price.isNotEmpty) {
+      map['price'] = price;
+    }
+    if (quantity.isNotEmpty) {
+      map['quantity'] = quantity;
+    }
+    if (date.isNotEmpty) {
+      map['exp_date'] = date.elementAt(0);
+    }
+    if (value.isNotEmpty && date.isNotEmpty) {
+      for (int i = 1; i < 4; i++) {
+        map["discount_date_$i"] = date.elementAt(i);
+        map["discount_value_$i"] = value.elementAt(i + 1);
+      }
+    }
+    if (num.isNotEmpty) {
+      map['contact_info'] = num;
+    }
+    map["image"] = "image"; //TODO
+    map["category"] = "AAA"; //TODO
+    String tok = widget.token;
+    final response =
+        await http.post(Uri.parse(Assets.link + "update" + "/" + id),
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Accept": "application/json",
+              'Authorization': 'Bearer $tok',
+            },
+            encoding: Encoding.getByName('utf-8'),
+            body: map);
+    Map<String, dynamic> resp = jsonDecode(response.body);
+    print(response.body);
+    if (response.statusCode == 200) {
+      Navigator.pop(context);
+    } else if (response.statusCode == 401) {
+      //TODO: add something
+    }
+  }
+
+  Widget dateInput(int i) {
+    return Row(
+      children: [
+        Container(
+          margin: const EdgeInsets.fromLTRB(50, 0, 5, 0),
+          width: MediaQuery.of(context).size.width / 2,
+          decoration: BoxDecoration(
+              borderRadius:
+                  BorderRadius.all(Radius.circular(Assets.roundCorners)),
+              boxShadow: [
+                BoxShadow(
+                  offset: const Offset(2, 2),
+                  blurRadius: 6,
+                  spreadRadius: 1,
+                  color: dateShadowColor,
+                )
+              ]),
+          child: TextField(
+              keyboardType: TextInputType.datetime,
+              textInputAction: TextInputAction.next,
+              onSubmitted: (String x) {
+                setState(() {
+                  nameShadowColor = Assets.shadowColor;
+                  priceShadowColor = Assets.shadowColor;
+                  numShadowColor = Assets.shadowColor;
+                  quantityShadowColor = Assets.shadowColor;
+                  quantityShadowColor = Assets.shadowColor;
+                  dateShadowColor = Assets.tappedShadowColor;
+                  date.add(x);
+                });
+              },
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Assets.textColor,
+                fontSize: 20,
+              ),
+              decoration: InputDecoration(
+                hintText: "YYYY-MM-DD",
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                border: UnderlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                  Radius.circular(Assets.roundCorners),
+                )),
+                focusedBorder: UnderlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(Assets.roundCorners),
+                    ),
+                    borderSide: BorderSide(
+                      color: Assets.primaryColor,
+                      width: 0.01,
+                    )),
+                filled: true,
+                fillColor: Assets.backgroundColor.withOpacity(0.9),
+                label: Text(
+                  'Discount Date $i',
+                  style: TextStyle(
+                    fontFamily: Assets.mainFont,
+                    color: Assets.textColor,
+                  ),
+                ),
+              )),
+        ),
+        Container(
+          margin: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+          width: MediaQuery.of(context).size.width * 1.3 / 6,
+          decoration: BoxDecoration(
+              borderRadius:
+                  BorderRadius.all(Radius.circular(Assets.roundCorners)),
+              boxShadow: [
+                BoxShadow(
+                  offset: const Offset(2, 2),
+                  blurRadius: 6,
+                  spreadRadius: 1,
+                  color: dateShadowColor,
+                )
+              ]),
+          child: TextField(
+              keyboardType: TextInputType.number,
+              textInputAction: TextInputAction.next,
+              onChanged: (String x) {
+                setState(() {
+                  nameShadowColor = Assets.shadowColor;
+                  priceShadowColor = Assets.shadowColor;
+                  numShadowColor = Assets.shadowColor;
+                  quantityShadowColor = Assets.shadowColor;
+                  dateShadowColor = Assets.tappedShadowColor;
+                  value.add(x);
+                });
+              },
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Assets.textColor,
+                fontSize: 20,
+              ),
+              decoration: InputDecoration(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                border: UnderlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                  Radius.circular(Assets.roundCorners),
+                )),
+                focusedBorder: UnderlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(Assets.roundCorners),
+                    ),
+                    borderSide: BorderSide(
+                      color: Assets.primaryColor,
+                      width: 0.01,
+                    )),
+                filled: true,
+                fillColor: Assets.backgroundColor.withOpacity(0.9),
+                label: Text(
+                  'value',
+                  style: TextStyle(
+                    fontFamily: Assets.mainFont,
+                    color: Assets.textColor,
+                  ),
+                ),
+              )),
+        ),
+      ],
+    );
+  }
+
+  void auto() {
+    Navigator.pop(context);
+  }
 }

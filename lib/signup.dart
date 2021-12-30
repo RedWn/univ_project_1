@@ -375,7 +375,8 @@ class _SignUpState extends State<SignUp> {
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (_) => MainPage(token: resp["token"].toString())));
+              builder: (_) => MainPage(
+                  token: resp["token"].toString(), id: resp["id"].toString())));
     } else if (response.statusCode == 422) {
       if (resp["errors"]["email"] != null) {
         setState(() {

@@ -449,6 +449,7 @@ class _AddProductState extends State<AddProduct> {
                             ),
                             onPressed: () {
                               add();
+                              //auto();
                             },
                             child: Text(
                               'Add',
@@ -478,7 +479,7 @@ class _AddProductState extends State<AddProduct> {
     for (int i = 1; i < 4; i++) {
       print(date);
       map["discount_date_$i"] = date.elementAt(i);
-      map["discount_value_$i"] = value.elementAt(i + 1);
+      map["discount_value_$i"] = value.elementAt(i - 1);
     }
     map['contact_info'] = num;
     map["image"] = "image"; //TODO
@@ -493,9 +494,10 @@ class _AddProductState extends State<AddProduct> {
         encoding: Encoding.getByName('utf-8'),
         body: map);
     Map<String, dynamic> resp = jsonDecode(response.body);
-    if (response.statusCode == 201) {
-      Navigator.push(context,
-          MaterialPageRoute(builder: (_) => MainPage(token: widget.token)));
+    print(response.statusCode);
+    if (response.statusCode == 200) {
+      Navigator.pop(context);
+      print("HI");
     } else if (response.statusCode == 401) {
       //TODO: add something
     }
@@ -628,7 +630,6 @@ class _AddProductState extends State<AddProduct> {
   }
 
   void auto() {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (_) => MainPage(token: widget.token)));
+    Navigator.pop(context);
   }
 }
