@@ -28,7 +28,7 @@ class Product extends StatefulWidget {
 }
 
 class _ProductState extends State<Product> {
-  IconData icon = Icons.search;
+  IconData icon = Icons.favorite_border;
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +129,7 @@ class _ProductState extends State<Product> {
     var map = <String, dynamic>{};
     map['id'] = widget.id;
     setState(() {
-      icon = Icons.search;
+      icon = Icons.favorite;
     });
     final response = await http.post(Uri.parse(Assets.link + "addlike"),
         headers: {
@@ -138,7 +138,6 @@ class _ProductState extends State<Product> {
           'Authorization': 'Bearer ${widget.token}',
         },
         body: map);
-    print(response.body);
   }
 }
 
@@ -185,7 +184,6 @@ class _MainPageState extends State<MainPage> {
         "id": widget.id
       },
     );
-    print(response.body);
     List<dynamic> resp =
         jsonDecode(response.body); //TODO: search single clients
     print(response.body);
@@ -244,7 +242,7 @@ class _MainPageState extends State<MainPage> {
   String searched = "";
   String title = 'All Products';
   List<Product> products = [];
-  Widget customSearchBar = Text('All Products');
+  Widget customSearchBar = const Text('All Products');
   String dropdownValue = 'Name';
 
   @override
@@ -294,7 +292,7 @@ class _MainPageState extends State<MainPage> {
           trailing: IconButton(
             iconSize: 25,
             color: Assets.primaryColor,
-            icon: Icon(Icons.search),
+            icon: const Icon(Icons.search),
             onPressed: () {
               setState(() {
                 title = 'Search';

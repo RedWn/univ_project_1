@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:univ_project_1/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -459,7 +457,8 @@ class _AddProductState extends State<AddProduct> {
                       ],
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 50, vertical: 15),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: ElevatedButton(
@@ -526,7 +525,6 @@ class _AddProductState extends State<AddProduct> {
     for (int i = 1; i < 4; i++) {
       request.fields["discount_date_$i"] = date[i];
       request.fields["discount_value_$i"] = value[i - 1];
-      print(value[i - 1]);
     }
     request.fields['contact_info'] = num;
     request.fields["category"] = category;
@@ -572,7 +570,7 @@ class _AddProductState extends State<AddProduct> {
       children: [
         Container(
           margin: const EdgeInsets.fromLTRB(50, 0, 5, 0),
-          width: MediaQuery.of(this.context).size.width / 2,
+          width: MediaQuery.of(context).size.width / 2,
           decoration: BoxDecoration(
               borderRadius:
                   BorderRadius.all(Radius.circular(Assets.roundCorners)),
@@ -632,7 +630,7 @@ class _AddProductState extends State<AddProduct> {
         ),
         Container(
           margin: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          width: MediaQuery.of(this.context).size.width * 1.3 / 6,
+          width: MediaQuery.of(context).size.width * 1.3 / 6,
           decoration: BoxDecoration(
               borderRadius:
                   BorderRadius.all(Radius.circular(Assets.roundCorners)),
@@ -693,6 +691,6 @@ class _AddProductState extends State<AddProduct> {
   }
 
   void auto() {
-    Navigator.pop(this.context);
+    Navigator.pop(context);
   }
 }

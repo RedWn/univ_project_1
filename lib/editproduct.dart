@@ -51,7 +51,7 @@ class _EditProductState extends State<EditProduct> {
                 Column(
                   children: [
                     SizedBox(
-                      width: MediaQuery.of(context).size.width / 2,
+                      width: MediaQuery.of(context).size.width * 3 / 5,
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
@@ -78,7 +78,7 @@ class _EditProductState extends State<EditProduct> {
                           ),
                         ),
                         child: Text(
-                          'Upload Image',
+                          'Upload new Image',
                           style: TextStyle(fontFamily: Assets.mainFont),
                         ),
                         onPressed: () async {

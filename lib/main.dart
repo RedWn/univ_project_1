@@ -85,7 +85,7 @@ class RedApp extends StatelessWidget {
                       'App Pharma',
                       style: TextStyle(
                         fontFamily: Assets.mainFont,
-                        fontSize: 60,
+                        fontSize: 50,
                         color: Assets.textColor,
                       ),
                     ),
