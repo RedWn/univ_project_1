@@ -246,7 +246,6 @@ class _LoginState extends State<Login> {
         encoding: Encoding.getByName('utf-8'),
         body: map);
     Map<String, dynamic> resp = jsonDecode(response.body);
-    print(resp["user"]["id"]);
     if (response.statusCode == 201) {
       Navigator.push(
           context,
@@ -268,7 +267,6 @@ class _LoginState extends State<Login> {
         });
       }
     }
-    print(response.body);
   }
 
   void autoLogin() {

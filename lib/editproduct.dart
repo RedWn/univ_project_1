@@ -4,7 +4,6 @@ import 'package:univ_project_1/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:univ_project_1/productspage.dart';
 
 class EditProduct extends StatefulWidget {
   final String token;
@@ -21,15 +20,12 @@ class _EditProductState extends State<EditProduct> {
   Color priceShadowColor = Assets.shadowColor;
   Color numShadowColor = Assets.shadowColor;
   Color quantityShadowColor = Assets.shadowColor;
-  Color dateShadowColor = Assets.shadowColor;
   ImagePicker picker = ImagePicker();
   XFile? image;
   String name = "";
   String price = "";
   String quantity = "";
   String num = "";
-  List<String> date = [];
-  List<String> value = [];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -116,7 +112,6 @@ class _EditProductState extends State<EditProduct> {
                             priceShadowColor = Assets.shadowColor;
                             numShadowColor = Assets.shadowColor;
                             quantityShadowColor = Assets.shadowColor;
-                            dateShadowColor = Assets.shadowColor;
                             name = x;
                           });
                         },
@@ -181,7 +176,6 @@ class _EditProductState extends State<EditProduct> {
                                 priceShadowColor = Assets.tappedShadowColor;
                                 numShadowColor = Assets.shadowColor;
                                 quantityShadowColor = Assets.shadowColor;
-                                dateShadowColor = Assets.shadowColor;
                                 price = x;
                               });
                             },
@@ -241,7 +235,6 @@ class _EditProductState extends State<EditProduct> {
                                 priceShadowColor = Assets.shadowColor;
                                 numShadowColor = Assets.shadowColor;
                                 quantityShadowColor = Assets.tappedShadowColor;
-                                dateShadowColor = Assets.shadowColor;
                                 quantity = x;
                               });
                             },
@@ -306,7 +299,6 @@ class _EditProductState extends State<EditProduct> {
                             priceShadowColor = Assets.shadowColor;
                             numShadowColor = Assets.tappedShadowColor;
                             quantityShadowColor = Assets.shadowColor;
-                            dateShadowColor = Assets.shadowColor;
                             num = x;
                           });
                         },
@@ -346,80 +338,6 @@ class _EditProductState extends State<EditProduct> {
                       height: 20,
                     ),
                     Container(
-                      margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(Assets.roundCorners)),
-                          boxShadow: [
-                            BoxShadow(
-                              offset: const Offset(2, 2),
-                              blurRadius: 6,
-                              spreadRadius: 1,
-                              color: dateShadowColor,
-                            )
-                          ]),
-                      child: TextField(
-                          keyboardType: TextInputType.datetime,
-                          textInputAction: TextInputAction.next,
-                          onChanged: (String x) {
-                            setState(() {
-                              nameShadowColor = Assets.shadowColor;
-                              priceShadowColor = Assets.shadowColor;
-                              numShadowColor = Assets.shadowColor;
-                              quantityShadowColor = Assets.shadowColor;
-                              dateShadowColor = Assets.tappedShadowColor;
-                              date[0] = x;
-                            });
-                          },
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Assets.textColor,
-                            fontSize: 20,
-                          ),
-                          decoration: InputDecoration(
-                            hintText: "YYYY-MM-DD",
-                            contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 15),
-                            border: UnderlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                              Radius.circular(Assets.roundCorners),
-                            )),
-                            focusedBorder: UnderlineInputBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(Assets.roundCorners),
-                                ),
-                                borderSide: BorderSide(
-                                  color: Assets.primaryColor,
-                                  width: 0.01,
-                                )),
-                            filled: true,
-                            fillColor: Assets.backgroundColor.withOpacity(0.9),
-                            label: Text(
-                              'Expiration Date',
-                              style: TextStyle(
-                                fontFamily: Assets.mainFont,
-                                color: Assets.textColor,
-                              ),
-                            ),
-                          )),
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    dateInput(1),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    dateInput(2),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    dateInput(3),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Container(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width,
@@ -450,7 +368,7 @@ class _EditProductState extends State<EditProduct> {
                               ),
                             ),
                             onPressed: () {
-                              delete();
+                              delete(context);
                             },
                             child: Text(
                               'DELETE',
@@ -495,7 +413,7 @@ class _EditProductState extends State<EditProduct> {
                               ),
                             ),
                             onPressed: () {
-                              add();
+                              add(context);
                             },
                             child: Text(
                               'Edit',
@@ -516,28 +434,23 @@ class _EditProductState extends State<EditProduct> {
     );
   }
 
-  Future<void> delete() async {
-    var idd = widget.id;
-    print(widget.id);
+  Future<void> delete(context) async {
     var tok = widget.token;
     final response =
-        await http.delete(Uri.parse(Assets.link + "delete" + "/" + idd),
+        await http.delete(Uri.parse(Assets.link + "delete" + "/" + widget.id),
             headers: {
               "Accept": "application/json",
               'Authorization': 'Bearer $tok',
             },
             encoding: Encoding.getByName('utf-8'));
-    print(response.body);
     if (response.statusCode == 200) {
       Navigator.pop(context);
-    } else if (response.statusCode == 500) {
+    } else {
       //TODO: add something
     }
   }
 
-  Future<void> add() async {
-    var id = widget.id;
-    print(id);
+  Future<void> add(context) async {
     var map = <String, dynamic>{};
     if (name.isNotEmpty) {
       map['name'] = name;
@@ -548,23 +461,13 @@ class _EditProductState extends State<EditProduct> {
     if (quantity.isNotEmpty) {
       map['quantity'] = quantity;
     }
-    if (date.isNotEmpty) {
-      map['exp_date'] = date.elementAt(0);
-    }
-    if (value.isNotEmpty && date.isNotEmpty) {
-      for (int i = 1; i < 4; i++) {
-        map["discount_date_$i"] = date.elementAt(i);
-        map["discount_value_$i"] = value.elementAt(i + 1);
-      }
-    }
     if (num.isNotEmpty) {
       map['contact_info'] = num;
     }
     map["image"] = "image"; //TODO
-    map["category"] = "AAA"; //TODO
     String tok = widget.token;
     final response =
-        await http.post(Uri.parse(Assets.link + "update" + "/" + id),
+        await http.post(Uri.parse(Assets.link + "update" + "/" + widget.id),
             headers: {
               "Content-Type": "application/x-www-form-urlencoded",
               "Accept": "application/json",
@@ -573,137 +476,11 @@ class _EditProductState extends State<EditProduct> {
             encoding: Encoding.getByName('utf-8'),
             body: map);
     Map<String, dynamic> resp = jsonDecode(response.body);
-    print(response.body);
     if (response.statusCode == 200) {
       Navigator.pop(context);
     } else if (response.statusCode == 401) {
       //TODO: add something
     }
-  }
-
-  Widget dateInput(int i) {
-    return Row(
-      children: [
-        Container(
-          margin: const EdgeInsets.fromLTRB(50, 0, 5, 0),
-          width: MediaQuery.of(context).size.width / 2,
-          decoration: BoxDecoration(
-              borderRadius:
-                  BorderRadius.all(Radius.circular(Assets.roundCorners)),
-              boxShadow: [
-                BoxShadow(
-                  offset: const Offset(2, 2),
-                  blurRadius: 6,
-                  spreadRadius: 1,
-                  color: dateShadowColor,
-                )
-              ]),
-          child: TextField(
-              keyboardType: TextInputType.datetime,
-              textInputAction: TextInputAction.next,
-              onSubmitted: (String x) {
-                setState(() {
-                  nameShadowColor = Assets.shadowColor;
-                  priceShadowColor = Assets.shadowColor;
-                  numShadowColor = Assets.shadowColor;
-                  quantityShadowColor = Assets.shadowColor;
-                  quantityShadowColor = Assets.shadowColor;
-                  dateShadowColor = Assets.tappedShadowColor;
-                  date.add(x);
-                });
-              },
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Assets.textColor,
-                fontSize: 20,
-              ),
-              decoration: InputDecoration(
-                hintText: "YYYY-MM-DD",
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                border: UnderlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                  Radius.circular(Assets.roundCorners),
-                )),
-                focusedBorder: UnderlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(Assets.roundCorners),
-                    ),
-                    borderSide: BorderSide(
-                      color: Assets.primaryColor,
-                      width: 0.01,
-                    )),
-                filled: true,
-                fillColor: Assets.backgroundColor.withOpacity(0.9),
-                label: Text(
-                  'Discount Date $i',
-                  style: TextStyle(
-                    fontFamily: Assets.mainFont,
-                    color: Assets.textColor,
-                  ),
-                ),
-              )),
-        ),
-        Container(
-          margin: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          width: MediaQuery.of(context).size.width * 1.3 / 6,
-          decoration: BoxDecoration(
-              borderRadius:
-                  BorderRadius.all(Radius.circular(Assets.roundCorners)),
-              boxShadow: [
-                BoxShadow(
-                  offset: const Offset(2, 2),
-                  blurRadius: 6,
-                  spreadRadius: 1,
-                  color: dateShadowColor,
-                )
-              ]),
-          child: TextField(
-              keyboardType: TextInputType.number,
-              textInputAction: TextInputAction.next,
-              onChanged: (String x) {
-                setState(() {
-                  nameShadowColor = Assets.shadowColor;
-                  priceShadowColor = Assets.shadowColor;
-                  numShadowColor = Assets.shadowColor;
-                  quantityShadowColor = Assets.shadowColor;
-                  dateShadowColor = Assets.tappedShadowColor;
-                  value.add(x);
-                });
-              },
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Assets.textColor,
-                fontSize: 20,
-              ),
-              decoration: InputDecoration(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                border: UnderlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                  Radius.circular(Assets.roundCorners),
-                )),
-                focusedBorder: UnderlineInputBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(Assets.roundCorners),
-                    ),
-                    borderSide: BorderSide(
-                      color: Assets.primaryColor,
-                      width: 0.01,
-                    )),
-                filled: true,
-                fillColor: Assets.backgroundColor.withOpacity(0.9),
-                label: Text(
-                  'value',
-                  style: TextStyle(
-                    fontFamily: Assets.mainFont,
-                    color: Assets.textColor,
-                  ),
-                ),
-              )),
-        ),
-      ],
-    );
   }
 
   void auto() {

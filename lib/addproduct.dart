@@ -4,7 +4,6 @@ import 'package:univ_project_1/main.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:univ_project_1/productspage.dart';
 
 class AddProduct extends StatefulWidget {
   final String token;
@@ -26,8 +25,10 @@ class _AddProductState extends State<AddProduct> {
   String price = "";
   String quantity = "";
   String num = "";
-  List<String> date = [];
-  List<String> value = [];
+  String category = "";
+  List<String> date = ["", "", "", ""];
+  List<String> value = ["", "", "", ""];
+  String dropdownValue = 'Medicine';
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -417,6 +418,46 @@ class _AddProductState extends State<AddProduct> {
                     const SizedBox(
                       height: 20,
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Category: ",
+                          style: TextStyle(
+                              fontFamily: Assets.mainFont,
+                              fontSize: 25,
+                              color: Assets.textColor),
+                        ),
+                        DropdownButton<String>(
+                          value: dropdownValue,
+                          borderRadius:
+                              BorderRadius.circular(Assets.roundCorners),
+                          icon: const Icon(Icons.arrow_downward),
+                          elevation: 16,
+                          style: TextStyle(
+                              color: Assets.primaryColor,
+                              fontFamily: Assets.mainFont,
+                              fontSize: 25),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              dropdownValue = newValue!;
+                              category = dropdownValue;
+                            });
+                          },
+                          items: <String>[
+                            'Medicine',
+                            'Creams',
+                            'Shampoos',
+                            'Others'
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 50),
                       child: SizedBox(
@@ -448,7 +489,7 @@ class _AddProductState extends State<AddProduct> {
                               ),
                             ),
                             onPressed: () {
-                              add();
+                              add(context);
                               //auto();
                             },
                             child: Text(
@@ -470,38 +511,60 @@ class _AddProductState extends State<AddProduct> {
     );
   }
 
-  Future<void> add() async {
-    var map = <String, dynamic>{};
-    map['name'] = name;
-    map['price'] = price;
-    map['quantity'] = name;
-    map['exp_date'] = date.elementAt(0);
-    for (int i = 1; i < 4; i++) {
-      print(date);
-      map["discount_date_$i"] = date.elementAt(i);
-      map["discount_value_$i"] = value.elementAt(i - 1);
-    }
-    map['contact_info'] = num;
-    map["image"] = "image"; //TODO
-    map["category"] = "AAA"; //TODO
+  Future<void> add(context) async {
     String tok = widget.token;
-    final response = await http.post(Uri.parse(Assets.link + "store"),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Accept": "application/json",
-          'Authorization': 'Bearer $tok',
-        },
-        encoding: Encoding.getByName('utf-8'),
-        body: map);
-    Map<String, dynamic> resp = jsonDecode(response.body);
-    print(response.statusCode);
+    var request =
+        http.MultipartRequest("POST", Uri.parse(Assets.link + "store"));
+    request.headers["Content-Type"] = "application/x-www-form-urlencoded";
+    request.headers["Accept"] = "application/json";
+    request.headers["Authorization"] = "Bearer $tok";
+    request.fields['name'] = name;
+    request.fields['price'] = price;
+    request.fields['quantity'] = quantity;
+    request.fields['exp_date'] = date[0];
+    request.fields["category"] = category;
+    for (int i = 1; i < 4; i++) {
+      request.fields["discount_date_$i"] = date[i];
+      request.fields["discount_value_$i"] = value[i - 1];
+      print(value[i - 1]);
+    }
+    request.fields['contact_info'] = num;
+    request.fields["category"] = category;
+    var pic = await http.MultipartFile.fromPath("image", image!.path);
+    request.files.add(pic);
+    var response = await request.send();
+    var responseData = await response.stream.toBytes();
+    var responseString = String.fromCharCodes(responseData);
+    print(responseString);
+
+    // var map = <String, dynamic>{};
+    // map['name'] = name;
+    // map['price'] = price;
+    // map['quantity'] = quantity;
+    // map['exp_date'] = date[0];
+    // print(value);
+    // for (int i = 1; i < 4; i++) {
+    //   map["discount_date_$i"] = date[i];
+    //   map["discount_value_$i"] = value[i - 1];
+    // }
+    // map['contact_info'] = num;
+    // map['image'] = image; //TODO image
+    // map["category"] = category;
+    // final response = await http.post(Uri.parse(Assets.link + "store"),
+    //     headers: {
+    //       "Content-Type": "application/x-www-form-urlencoded",
+    //       "Accept": "application/json",
+    //       'Authorization': 'Bearer $tok',
+    //     },
+    //     encoding: Encoding.getByName('utf-8'),
+    //     body: map);
+    // Map<String, dynamic> resp = jsonDecode(response.body);
+    // print(response.body);
     if (response.statusCode == 200) {
-      Navigator.pop(context);
-      print("HI");
+      Navigator.pop(this.context);
     } else if (response.statusCode == 401) {
       //TODO: add something
     }
-    print(response.body);
   }
 
   Widget dateInput(int i) {
@@ -509,7 +572,7 @@ class _AddProductState extends State<AddProduct> {
       children: [
         Container(
           margin: const EdgeInsets.fromLTRB(50, 0, 5, 0),
-          width: MediaQuery.of(context).size.width / 2,
+          width: MediaQuery.of(this.context).size.width / 2,
           decoration: BoxDecoration(
               borderRadius:
                   BorderRadius.all(Radius.circular(Assets.roundCorners)),
@@ -524,7 +587,7 @@ class _AddProductState extends State<AddProduct> {
           child: TextField(
               keyboardType: TextInputType.datetime,
               textInputAction: TextInputAction.next,
-              onSubmitted: (String x) {
+              onChanged: (String x) {
                 setState(() {
                   nameShadowColor = Assets.shadowColor;
                   priceShadowColor = Assets.shadowColor;
@@ -532,7 +595,7 @@ class _AddProductState extends State<AddProduct> {
                   quantityShadowColor = Assets.shadowColor;
                   quantityShadowColor = Assets.shadowColor;
                   dateShadowColor = Assets.tappedShadowColor;
-                  date.add(x);
+                  date[i] = x;
                 });
               },
               textAlign: TextAlign.center,
@@ -569,7 +632,7 @@ class _AddProductState extends State<AddProduct> {
         ),
         Container(
           margin: const EdgeInsets.fromLTRB(5, 0, 0, 0),
-          width: MediaQuery.of(context).size.width * 1.3 / 6,
+          width: MediaQuery.of(this.context).size.width * 1.3 / 6,
           decoration: BoxDecoration(
               borderRadius:
                   BorderRadius.all(Radius.circular(Assets.roundCorners)),
@@ -591,7 +654,7 @@ class _AddProductState extends State<AddProduct> {
                   numShadowColor = Assets.shadowColor;
                   quantityShadowColor = Assets.shadowColor;
                   dateShadowColor = Assets.tappedShadowColor;
-                  value.add(x);
+                  value[i - 1] = x;
                 });
               },
               textAlign: TextAlign.center,
@@ -630,6 +693,6 @@ class _AddProductState extends State<AddProduct> {
   }
 
   void auto() {
-    Navigator.pop(context);
+    Navigator.pop(this.context);
   }
 }

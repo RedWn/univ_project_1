@@ -17,9 +17,18 @@ class Assets {
   static Color shadowColor = Colors.grey.shade400;
   static double roundCorners = 12;
   static String mainFont = 'Varela';
+  static bool rtl = false;
   static String link = "http://10.0.2.2:8000/api/";
   static String link2 =
       "https://410c09a9-1200-4123-baa1-53834038eac7.mock.pstmn.io/register";
+
+  static TextDirection rtlState() {
+    if (rtl) {
+      return TextDirection.rtl;
+    } else {
+      return TextDirection.ltr;
+    }
+  }
 
   static void enableDarkMode() {
     primaryColor = const Color(0xFFAF2D3C);

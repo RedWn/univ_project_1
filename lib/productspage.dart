@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:univ_project_1/main.dart';
 import 'package:flutter/material.dart';
@@ -9,20 +8,28 @@ import 'package:univ_project_1/editproduct.dart';
 import 'package:univ_project_1/showproduct.dart';
 import 'package:http/http.dart' as http;
 
-class Product extends StatelessWidget {
-  Product(
-      {required this.img,
+class Product extends StatefulWidget {
+  const Product(
+      {Key? key,
+      required this.img,
       required this.text,
-      required this.index,
       required this.state,
       required this.token,
-      required this.id});
+      required this.id})
+      : super(key: key);
   final Image img;
   final String text;
-  final String index;
   final String state;
   final String token;
   final String id;
+
+  @override
+  State<Product> createState() => _ProductState();
+}
+
+class _ProductState extends State<Product> {
+  IconData icon = Icons.search;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -62,36 +69,76 @@ class Product extends StatelessWidget {
           ),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            img,
-            Text(
-              text,
-              style: TextStyle(
-                  fontSize: 20,
-                  fontFamily: Assets.mainFont,
-                  color: Assets.textColor,
-                  height: 2),
+            widget.img,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  widget.text,
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: Assets.mainFont,
+                      color: Assets.textColor,
+                      height: 2),
+                ),
+                TextButton.icon(
+                    style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                            (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.hovered)) {
+                            return Colors.deepPurple.withOpacity(0.04);
+                          }
+                          if (states.contains(MaterialState.focused) ||
+                              states.contains(MaterialState.pressed)) {
+                            return Colors.deepPurple.withOpacity(0.5);
+                          }
+                        }),
+                        foregroundColor:
+                            MaterialStateProperty.all(Assets.primaryColor)),
+                    onPressed: () {
+                      _onLiking();
+                    },
+                    icon: Icon(icon),
+                    label: const Text("Like"))
+              ],
             ),
           ]),
           onPressed: () {
-            if (state == "My Products") {
-              print(id);
+            if (widget.state == "My Products") {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => EditProduct(
-                            token: token,
-                            id: id, //TODO fix the two steps back and refresh the page when you come back (.then maybe??)
+                            token: widget.token,
+                            id: widget
+                                .id, //TODO fix the two steps back and refresh the page when you come back (.then maybe??)
                           )));
             } else {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ShowProduct(
-                            index: index,
+                            id: widget.id,
                           )));
             }
           },
         ));
+  }
+
+  Future<void> _onLiking() async {
+    var map = <String, dynamic>{};
+    map['id'] = widget.id;
+    setState(() {
+      icon = Icons.search;
+    });
+    final response = await http.post(Uri.parse(Assets.link + "addlike"),
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Accept": "application/json",
+          'Authorization': 'Bearer ${widget.token}',
+        },
+        body: map);
+    print(response.body);
   }
 }
 
@@ -107,8 +154,6 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   Future<void> getAll() async {
-    var map = <String, dynamic>{};
-    map['id'] = widget.id;
     final response = await http.get(
       Uri.parse(Assets.link + "showAllProducts"),
       headers: {
@@ -122,67 +167,143 @@ class _MainPageState extends State<MainPage> {
       Product temp = Product(
           img: Image.asset(resp[i]["image"]),
           text: resp[i]["name"],
-          index: i.toString(),
           token: widget.token,
           id: resp[i]["id"].toString(),
           state: title);
-      Products.add(temp);
+      products.add(temp);
     }
   }
 
   Future<void> getMy() async {
-    var map = <String, dynamic>{};
-    map['id'] = widget.id;
     var tok = widget.token;
-    final response = await http.post(Uri.parse(Assets.link + "myProduct"),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Accept": "application/json",
-          'Authorization': 'Bearer $tok',
-        },
-        body: map);
+    final response = await http.get(
+      Uri.parse(Assets.link + "myProduct"),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json",
+        'Authorization': 'Bearer $tok',
+        "id": widget.id
+      },
+    );
+    print(response.body);
     List<dynamic> resp =
         jsonDecode(response.body); //TODO: search single clients
+    print(response.body);
     for (int i = 0; i < resp.length; i++) {
       Product temp = Product(
           img: Image.asset(resp[i]["image"]),
           text: resp[i]["name"],
-          index: i.toString(),
           token: widget.token,
           id: resp[i]["id"].toString(),
           state: title);
-      Products.add(temp);
+      products.add(temp);
+    }
+  }
+
+  Future<void> getSearch(String mode) async {
+    String link = "products/searchByName/$searched";
+    if (mode == "Category") {
+      link = "products/searchByCategory/$searched";
+    } else if (mode == "Exp. Date") {
+      link = "products/searchByExp_date/$searched";
+    }
+    final response = await http.get(
+      Uri.parse(Assets.link + link),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json",
+      },
+    );
+    List<dynamic> resp =
+        jsonDecode(response.body); //TODO: search single clients
+    print(response.body);
+    for (int i = 0; i < resp.length; i++) {
+      Product temp = Product(
+          img: Image.asset(resp[i]["image"]),
+          text: resp[i]["name"],
+          token: widget.token,
+          id: resp[i]["id"].toString(),
+          state: title);
+      products.add(temp);
     }
   }
 
   Future<List<Product>> getProducts(String mode) async {
-    Products = [];
+    products = [];
     if (mode == 'All Products') {
       await getAll();
     } else if (mode == 'My Products') {
       await getMy();
-    } else if (mode == 'Favorites') {
-      // map = getFav();
-      for (int i = 0; i < 5; i++) {
-        Product temp = Product(
-            img: Image.asset('Assets/test$i.png'),
-            text: 'Very Cool Car #$i',
-            index: "0",
-            token: "0",
-            id: "0",
-            state: title);
-        Products.add(temp);
-      }
+    } else if (mode == 'Search') {
+      await getSearch(dropdownValue);
     }
-
-    return Products;
+    return products;
   }
 
   int _selectedIndex = 0;
+  String searched = "";
   String title = 'All Products';
-  List<Product> Products = [];
+  List<Product> products = [];
+  Widget customSearchBar = Text('All Products');
+  String dropdownValue = 'Name';
+
   @override
   Widget build(BuildContext context) {
+    if (title == "Search") {
+      setState(() {
+        customSearchBar = ListTile(
+          leading: DropdownButton<String>(
+            value: dropdownValue,
+            borderRadius: BorderRadius.circular(Assets.roundCorners),
+            elevation: 16,
+            style: TextStyle(
+              color: Assets.primaryColor,
+              fontFamily: Assets.mainFont,
+            ),
+            onChanged: (String? newValue) {
+              setState(() {
+                dropdownValue = newValue!;
+                // mode = dropdownValue;
+              });
+            },
+            items: <String>['Name', 'Category', 'Exp. Date']
+                .map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+          title: TextField(
+            onChanged: (String x) {
+              searched = x;
+            },
+            decoration: InputDecoration(
+              hintText: 'type here...',
+              hintStyle: TextStyle(
+                color: Assets.primaryColor,
+                fontSize: 18,
+                fontStyle: FontStyle.italic,
+              ),
+              border: InputBorder.none,
+            ),
+            style: TextStyle(
+              color: Assets.primaryColor,
+            ),
+          ),
+          trailing: IconButton(
+            iconSize: 25,
+            color: Assets.primaryColor,
+            icon: Icon(Icons.search),
+            onPressed: () {
+              setState(() {
+                title = 'Search';
+              });
+            },
+          ),
+        );
+      });
+    }
     return MaterialApp(
       home: WillPopScope(
         onWillPop: () async => false,
@@ -199,9 +320,12 @@ class _MainPageState extends State<MainPage> {
               },
             ),
             appBar: AppBar(
+              elevation: 8,
+              shadowColor: Assets.primaryColor,
               foregroundColor: Assets.primaryColor,
-              title: Text(title),
+              title: customSearchBar,
               backgroundColor: Assets.backgroundColor,
+              centerTitle: true,
             ),
             drawer: SafeArea(
               child: Drawer(
@@ -238,6 +362,7 @@ class _MainPageState extends State<MainPage> {
             ),
             backgroundColor: Assets.backgroundColor,
             bottomNavigationBar: BottomNavigationBar(
+              elevation: 15,
               type: BottomNavigationBarType.shifting,
               backgroundColor: Assets.primaryColor,
               iconSize: 30,
@@ -262,8 +387,8 @@ class _MainPageState extends State<MainPage> {
                     icon: Icon(Icons.insert_emoticon_rounded),
                     label: "My Products"),
                 const BottomNavigationBarItem(
-                  icon: Icon(Icons.favorite),
-                  label: "Favorites",
+                  icon: Icon(Icons.search),
+                  label: "Search",
                 )
               ],
               onTap: _onTapping,
@@ -282,9 +407,9 @@ class _MainPageState extends State<MainPage> {
             return Container();
           }
           return ListView.builder(
-              itemCount: Products.length,
+              itemCount: products.length,
               itemBuilder: (BuildContext context, int i) {
-                return Products[i];
+                return products[i];
               });
         });
   }
@@ -294,10 +419,12 @@ class _MainPageState extends State<MainPage> {
       _selectedIndex = index;
       if (index == 1) {
         title = 'My Products';
+        customSearchBar = Text(title);
       } else if (index == 2) {
-        title = 'Favorites';
+        title = 'Search';
       } else {
         title = 'All Products';
+        customSearchBar = Text(title);
       }
     });
   }
