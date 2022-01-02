@@ -28,7 +28,8 @@ class Product extends StatefulWidget {
 }
 
 class _ProductState extends State<Product> {
-  IconData icon = Icons.favorite_border;
+  IconData icon = Icons.favorite;
+  _getRequests() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -112,12 +113,13 @@ class _ProductState extends State<Product> {
                             token: widget.token,
                             id: widget
                                 .id, //TODO fix the two steps back and refresh the page when you come back (.then maybe??)
-                          )));
+                          ))).then((val) => val ? _getRequests() : null);
             } else {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ShowProduct(
+                            token: widget.token,
                             id: widget.id,
                           )));
             }
@@ -131,13 +133,15 @@ class _ProductState extends State<Product> {
     setState(() {
       icon = Icons.favorite;
     });
-    final response = await http.post(Uri.parse(Assets.link + "addlike"),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "Accept": "application/json",
-          'Authorization': 'Bearer ${widget.token}',
-        },
-        body: map);
+    final response = await http.post(
+      Uri.parse(Assets.link + "showDetails/${widget.id}/likes"),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Accept": "application/json",
+        'Authorization': 'Bearer ${widget.token}',
+      },
+    );
+    print(response.body);
   }
 }
 
@@ -152,6 +156,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  _getRequests() async {}
   Future<void> getAll() async {
     final response = await http.get(
       Uri.parse(Assets.link + "showAllProducts"),
@@ -160,11 +165,14 @@ class _MainPageState extends State<MainPage> {
         "Accept": "application/json",
       },
     );
-    List<dynamic> resp =
-        jsonDecode(response.body); //TODO: search single clients
+    List<dynamic> resp = jsonDecode(response.body);
     for (int i = 0; i < resp.length; i++) {
+      resp[i]["image"] = resp[i]["image"].toString().replaceAll("public/", "");
+      resp[i]["image"] = resp[i]["image"].toString().replaceAll("storage/", "");
+      String str = Assets.picLink + resp[i]["image"];
+      print(str);
       Product temp = Product(
-          img: Image.asset(resp[i]["image"]),
+          img: Image.network(str),
           text: resp[i]["name"],
           token: widget.token,
           id: resp[i]["id"].toString(),
@@ -184,12 +192,14 @@ class _MainPageState extends State<MainPage> {
         "id": widget.id
       },
     );
-    List<dynamic> resp =
-        jsonDecode(response.body); //TODO: search single clients
-    print(response.body);
+    List<dynamic> resp = jsonDecode(response.body);
     for (int i = 0; i < resp.length; i++) {
+      resp[i]["image"] = resp[i]["image"].toString().replaceAll("public/", "");
+      resp[i]["image"] = resp[i]["image"].toString().replaceAll("storage/", "");
+      String str = Assets.picLink + resp[i]["image"];
+      print(str);
       Product temp = Product(
-          img: Image.asset(resp[i]["image"]),
+          img: Image.network(str),
           text: resp[i]["name"],
           token: widget.token,
           id: resp[i]["id"].toString(),
@@ -212,12 +222,14 @@ class _MainPageState extends State<MainPage> {
         "Accept": "application/json",
       },
     );
-    List<dynamic> resp =
-        jsonDecode(response.body); //TODO: search single clients
-    print(response.body);
+    List<dynamic> resp = jsonDecode(response.body);
     for (int i = 0; i < resp.length; i++) {
+      resp[i]["image"] = resp[i]["image"].toString().replaceAll("public/", "");
+      resp[i]["image"] = resp[i]["image"].toString().replaceAll("storage/", "");
+      String str = Assets.picLink + resp[i]["image"];
+      print(str);
       Product temp = Product(
-          img: Image.asset(resp[i]["image"]),
+          img: Image.network(str),
           text: resp[i]["name"],
           token: widget.token,
           id: resp[i]["id"].toString(),
@@ -312,9 +324,10 @@ class _MainPageState extends State<MainPage> {
               child: const Icon(Icons.add_circle_rounded),
               onPressed: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => AddProduct(token: widget.token)));
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => AddProduct(token: widget.token)))
+                    .then((val) => val ? _getRequests() : null);
               },
             ),
             appBar: AppBar(
@@ -402,7 +415,7 @@ class _MainPageState extends State<MainPage> {
         builder: (context, projectSnap) {
           if (projectSnap.connectionState == ConnectionState.none &&
               projectSnap.hasData == false) {
-            return Container();
+            return const CircularProgressIndicator();
           }
           return ListView.builder(
               itemCount: products.length,

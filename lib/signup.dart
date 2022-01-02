@@ -344,7 +344,7 @@ class _SignUpState extends State<SignUp> {
                               50,
                               0),
                           child: Text(
-                            'App Name',
+                            'Pharmapp',
                             style: TextStyle(
                                 fontSize: 20,
                                 fontFamily: Assets.mainFont,

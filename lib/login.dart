@@ -221,7 +221,7 @@ class _LoginState extends State<Login> {
                               50,
                               0),
                           child: Text(
-                            'App Name',
+                            'Pharmapp',
                             style: TextStyle(
                                 fontSize: 25,
                                 fontFamily: Assets.mainFont,

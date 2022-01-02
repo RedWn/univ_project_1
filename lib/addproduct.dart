@@ -514,7 +514,7 @@ class _AddProductState extends State<AddProduct> {
     String tok = widget.token;
     var request =
         http.MultipartRequest("POST", Uri.parse(Assets.link + "store"));
-    request.headers["Content-Type"] = "application/x-www-form-urlencoded";
+    request.headers["Content-Type"] = "application/form-data";
     request.headers["Accept"] = "application/json";
     request.headers["Authorization"] = "Bearer $tok";
     request.fields['name'] = name;
@@ -527,40 +527,14 @@ class _AddProductState extends State<AddProduct> {
       request.fields["discount_value_$i"] = value[i - 1];
     }
     request.fields['contact_info'] = num;
-    request.fields["category"] = category;
     var pic = await http.MultipartFile.fromPath("image", image!.path);
     request.files.add(pic);
     var response = await request.send();
     var responseData = await response.stream.toBytes();
     var responseString = String.fromCharCodes(responseData);
-    print(responseString);
-
-    // var map = <String, dynamic>{};
-    // map['name'] = name;
-    // map['price'] = price;
-    // map['quantity'] = quantity;
-    // map['exp_date'] = date[0];
-    // print(value);
-    // for (int i = 1; i < 4; i++) {
-    //   map["discount_date_$i"] = date[i];
-    //   map["discount_value_$i"] = value[i - 1];
-    // }
-    // map['contact_info'] = num;
-    // map['image'] = image; //TODO image
-    // map["category"] = category;
-    // final response = await http.post(Uri.parse(Assets.link + "store"),
-    //     headers: {
-    //       "Content-Type": "application/x-www-form-urlencoded",
-    //       "Accept": "application/json",
-    //       'Authorization': 'Bearer $tok',
-    //     },
-    //     encoding: Encoding.getByName('utf-8'),
-    //     body: map);
-    // Map<String, dynamic> resp = jsonDecode(response.body);
-    // print(response.body);
     if (response.statusCode == 200) {
       Navigator.pop(this.context);
-    } else if (response.statusCode == 401) {
+    } else {
       //TODO: add something
     }
   }

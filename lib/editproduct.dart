@@ -50,43 +50,43 @@ class _EditProductState extends State<EditProduct> {
                 ),
                 Column(
                   children: [
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 3 / 5,
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Assets.primaryColor),
-                          foregroundColor:
-                              MaterialStateProperty.all(Assets.backgroundColor),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          Assets.roundCorners))),
-                          overlayColor:
-                              MaterialStateProperty.resolveWith<Color?>(
-                            (Set<MaterialState> states) {
-                              if (states.contains(MaterialState.hovered)) {
-                                return Colors.deepPurple.withOpacity(0.04);
-                              }
-                              if (states.contains(MaterialState.focused) ||
-                                  states.contains(MaterialState.pressed)) {
-                                return const Color(0xFFFFDADB).withOpacity(0.3);
-                              }
-                              return null; // Defer to the widget's default.
-                            },
-                          ),
-                        ),
-                        child: Text(
-                          'Upload new Image',
-                          style: TextStyle(fontFamily: Assets.mainFont),
-                        ),
-                        onPressed: () async {
-                          image = await picker.pickImage(
-                              source: ImageSource.gallery);
-                        },
-                      ),
-                    ),
+                    // SizedBox(
+                    //   width: MediaQuery.of(context).size.width * 3 / 5,
+                    //   child: ElevatedButton(
+                    //     style: ButtonStyle(
+                    //       backgroundColor:
+                    //           MaterialStateProperty.all(Assets.primaryColor),
+                    //       foregroundColor:
+                    //           MaterialStateProperty.all(Assets.backgroundColor),
+                    //       shape:
+                    //           MaterialStateProperty.all<RoundedRectangleBorder>(
+                    //               RoundedRectangleBorder(
+                    //                   borderRadius: BorderRadius.circular(
+                    //                       Assets.roundCorners))),
+                    //       overlayColor:
+                    //           MaterialStateProperty.resolveWith<Color?>(
+                    //         (Set<MaterialState> states) {
+                    //           if (states.contains(MaterialState.hovered)) {
+                    //             return Colors.deepPurple.withOpacity(0.04);
+                    //           }
+                    //           if (states.contains(MaterialState.focused) ||
+                    //               states.contains(MaterialState.pressed)) {
+                    //             return const Color(0xFFFFDADB).withOpacity(0.3);
+                    //           }
+                    //           return null; // Defer to the widget's default.
+                    //         },
+                    //       ),
+                    //     ),
+                    //     child: Text(
+                    //       'Upload new Image',
+                    //       style: TextStyle(fontFamily: Assets.mainFont),
+                    //     ),
+                    //     onPressed: () async {
+                    //       image = await picker.pickImage(
+                    //           source: ImageSource.gallery);
+                    //     },
+                    //   ),
+                    // ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -445,37 +445,35 @@ class _EditProductState extends State<EditProduct> {
             encoding: Encoding.getByName('utf-8'));
     if (response.statusCode == 200) {
       Navigator.pop(context);
-    } else {
-      //TODO: add something
     }
   }
 
   Future<void> add(context) async {
-    var map = <String, dynamic>{};
+    String tok = widget.token;
+    var request = http.MultipartRequest(
+        "POST", Uri.parse(Assets.link + "update" + "/" + widget.id));
+    request.headers["Content-Type"] = "application/x-www-form-urlencoded";
+    request.headers["Accept"] = "application/json";
+    request.headers["Authorization"] = "Bearer $tok";
     if (name.isNotEmpty) {
-      map['name'] = name;
+      request.fields['name'] = name;
     }
     if (price.isNotEmpty) {
-      map['price'] = price;
+      request.fields['price'] = price;
     }
     if (quantity.isNotEmpty) {
-      map['quantity'] = quantity;
+      request.fields['quantity'] = quantity;
     }
     if (num.isNotEmpty) {
-      map['contact_info'] = num;
+      request.fields['contact_info'] = num;
     }
-    map["image"] = "image"; //TODO
-    String tok = widget.token;
-    final response =
-        await http.post(Uri.parse(Assets.link + "update" + "/" + widget.id),
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              "Accept": "application/json",
-              'Authorization': 'Bearer $tok',
-            },
-            encoding: Encoding.getByName('utf-8'),
-            body: map);
-    Map<String, dynamic> resp = jsonDecode(response.body);
+    if (image != null) {
+      var pic = await http.MultipartFile.fromPath("image", image!.path);
+      request.files.add(pic);
+    }
+    var response = await request.send();
+    var responseData = await response.stream.toBytes();
+    var responseString = String.fromCharCodes(responseData);
     if (response.statusCode == 200) {
       Navigator.pop(context);
     } else if (response.statusCode == 401) {

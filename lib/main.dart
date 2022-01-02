@@ -19,6 +19,7 @@ class Assets {
   static String mainFont = 'Varela';
   static bool rtl = false;
   static String link = "http://10.0.2.2:8000/api/";
+  static String picLink = "http://10.0.2.2:8000/";
   static String link2 =
       "https://410c09a9-1200-4123-baa1-53834038eac7.mock.pstmn.io/register";
 
@@ -82,7 +83,7 @@ class RedApp extends StatelessWidget {
                   ),
                   Container(
                     child: Text(
-                      'App Pharma',
+                      'Pharmapp',
                       style: TextStyle(
                         fontFamily: Assets.mainFont,
                         fontSize: 50,
